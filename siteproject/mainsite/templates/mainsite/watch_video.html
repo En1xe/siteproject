@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_2.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="watch-container">
+    <div class="videos-container">
+            <div>
+                <video controls style="width: 1300px; border-radius: 10px;">
+                    <source src="{{ video.file.url }}" type="video/mp4">
+                </video>
+            </div>
+
+        <span class="watch-title">{{ video.title|truncatechars:80 }}</span>
+
+        <div class="watch-widgets">
+            <div class="watch-widgets-left">
+                <a href="{% url 'channel' video.user.alias %}"><img class="watch-author-img" src="{{ video.user.user_icon.url }}"></a>
+                <div style="margin-left: 8px;">
+                    <a href="{% url 'channel' video.user.alias %}" style="text-decoration: none;">
+                    <p style="margin: 0; color: white; font-size: 18px;">{{ video.user.username }}</p>
+                    </a>
+                    <p style="margin: 0; color: #969696; font-weight: normal;">{{ video.user|get_subs }}</p>
+                </div>
+
+                {% include 'subs_btn.html' with author=author %}
+
+            </div>
+            <div class="watch-widgets-right">
+                {% include 'votes_content.html' with type='video' user_vote_type=user_vote_type content=video %}
+
+                {% include 'add_playlist.html' with playlist_form=playlist_form playlists=playlists video_playlists=video_playlists %}
+
+            </div>
+        </div>
+
+
+        <div class="description-container">
+            <span>{{ video|get_rel_views }}</span>
+            <span>{{ video.creation_date|get_date }}</span>
+            <div class="description">
+                <p class="short-text">{{ video.description|truncatechars:100 }}</p>
+                <p class="full-text" style="display: none;">{{ video.description }}</p>
+            </div>
+            <div class="channel-info" style="display: none;">
+                <a><img class="watch-author-img" src="{{ video.user.user_icon.url }}"></a>
+                <div style="margin-left: 8px;">
+                    <a href="{% url 'channel' video.user.alias %}" style="text-decoration: none;">
+                    <p style="margin: 0; color: white; font-size: 18px;">{{ video.user.username }}</p>
+                    </a>
+                    <p style="margin: 0; color: #969696; font-weight: normal;">{{ video.user|get_subs }}</p>
+                </div>
+            </div>
+            <div class="channel-info-btns">
+                <button><i class="fa-solid fa-circle-play"></i> Видео</button>
+                <button><i class="fa-regular fa-address-card"></i> О канале</button>
+            </div>
+            <button class="toggle-button" onclick="toggleDescription()">Развернуть</button>
+        </div>
+
+        <div class="comments-container">
+            <p class="comment_count">{{ video|get_comments_name }}</p>
+
+            {% include 'comment_form.html' with comment_form=comment_form %}
+
+            <div class="comment-list">
+                {% for comment in comments %}
+                    {% include 'mainsite/comment_item.html' with comment=comment video=video %}
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    <div class="side-watch-container">
+        {% if playlist %}
+            <div class="video-playlist">
+                <div style="padding: 6px 10px; margin-top: 10px;">
+                    <a href="{% url 'home_playlists' %}?list={{ playlist.id }}" class="watch-pl-title">
+                        {{ playlist.title }}
+                    </a>
+                </div>
+                <div class="watch-pl-field">
+                    <span>{{ playlist.author }}</span>
+                    <span>{{ video_index }} видео из {{ num_of_pl_videos }}</span>
+                </div>
+                <div class="watch-pl-list">
+                    {% for pl_video in playlist_videos %}
+
+                        {% include 'video_for_pl.html' with video=pl_video.video cur_video=video pl=playlist %}
+
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<script>
+function toggleDescription() {
+    // Получаем элементы, которые будем изменять
+    var shortText = document.querySelector('.description .short-text');
+    var fullText = document.querySelector('.description .full-text');
+    var channelInfo = document.querySelector('.channel-info');
+    var toggleButton = document.querySelector('.toggle-button');
+    var toggleChannelButtons = document.querySelector('.channel-info-btns');
+
+    // Проверяем текущее состояние
+    if (fullText.style.display === 'none') {
+        // Если текст скрыт, показываем полный текст и кнопку "Свернуть"
+        fullText.style.display = 'block';
+        shortText.style.display = 'none';
+        channelInfo.style.display = 'flex';  // Показываем информацию о канале
+        toggleChannelButtons.style.display = 'block';
+        toggleButton.textContent = 'Свернуть';  // Меняем текст на кнопке
+    } else {
+        // Если текст уже показывается, скрываем его и возвращаем кнопку в исходное состояние
+        fullText.style.display = 'none';
+        shortText.style.display = 'block';
+        channelInfo.style.display = 'none';  // Скрываем информацию о канале
+        toggleChannelButtons.style.display = 'none';
+        toggleButton.textContent = 'Развернуть';  // Меняем текст на кнопке
+    }
+}
+</script>
+
+{% endblock %}

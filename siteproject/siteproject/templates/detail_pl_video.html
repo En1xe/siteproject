@@ -1,0 +1,17 @@
+{% load user_tags %}
+
+<div class="video-wrapper2">
+  <a href="{% url 'detail_video' uuid=video.id %}">
+      <img class='video-container' src="{{ video.picture.url }}">
+      <div class="duration2">{{ video.duration|get_video_duration }}</div>
+      <div>
+          <p class="video-wrapper-title2">{{ video.title|truncatechars:50 }}</p>
+          <a href="{% url 'channel' video.user.alias %}">
+              <span class="author-name" title="{{ video.user.username}}">{{ video.user.username }}</span>
+          </a>
+          <span class="video-wrapper-views">{{ video|get_rel_views }}</span>
+          <span class="video-creation-date">• {{ video.creation_date|get_date }}</span>
+          <p class="video-wrapper-description">{{ video.description|truncatechars:100 }}</p>
+      </div>
+  </a>
+</div>

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_2.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="edit-content-aside">
+
+    <a class="edit-content-back" href="javascript:history.back()">
+        <div class="edit-content-back-field">
+        <i class="fa-solid fa-arrow-left-long"></i>
+            <span >Вернуться к контенту</span>
+        </div>
+    </a>
+    <a href="{% url 'detail_post' post.id %}" class="post-link">
+        <span>Ссылка на пост</span>
+    </a>
+</div>
+<div class="edit-content-container">
+    <span class="edit-content-container-title">Сведения о посте</span>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for f in form %}
+            <p><label class="edit-content-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+            <div>{{ f.errors }}</div>
+        {% endfor %}
+        <button class="edit-content-apply-btn" type="submit">Применить изменения</button>
+    </form>
+</div>
+{% endblock %}

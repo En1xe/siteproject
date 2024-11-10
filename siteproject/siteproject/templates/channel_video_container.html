@@ -1,0 +1,16 @@
+{% load user_tags %}
+
+<div class="video-wrapper">
+  <a href="{% url 'detail_video' video.pk %}">
+      <img class='video-container' src="{{ video.picture.url }}">
+      <div class="video-overlay">
+          <span class="overlay-text">Смотреть видео</span>
+      </div>
+      <div class="duration1">{{ video.duration|get_video_duration }}</div>
+      <span class="video-wrapper-title2">{{ video.title|truncatechars:40 }}</span>
+      <div class="video-wrapper-bottom2">
+          <span class="video-wrapper-views">{{ video|get_rel_views }}</span>
+          <span class="video-creation-date">• {{ video.creation_date|get_date }}</span>
+      </div>
+  </a>
+</div>

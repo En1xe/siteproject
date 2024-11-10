@@ -1,0 +1,141 @@
+{% load user_tags %}
+
+<aside class="aside" id="aside">
+    <div class="aside-top">
+        <button class="menu-toggle" id="menu-toggle_2">
+            <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
+        </button>
+        <a href="{% url 'homepage' %}" class="site-logo">KazTube</a>
+    </div>
+    <a class="aside-a" href="{% url 'homepage' %}">
+        <div class="aside-item">
+                <i class="fa-solid fa-house i-small"></i>
+                <span class="aside-text">Главная</span>
+                <i class="fa-solid fa-house i-big"></i>
+                <span class="small-aside-text">Главная</span>
+        </div>
+    </a>
+    <a class="aside-a" href="{% url 'subscriptions' %}">
+        <div class="aside-item">
+                <i class="fa-regular fa-address-book i-small"></i>
+                <span class="aside-text">Подписки</span>
+                <i class="fa-regular fa-address-book i-big"></i>
+                <span class="small-aside-text">Подписки</span>
+        </div>
+    </a>
+    <a class="aside-a" href="
+        {% if user.is_authenticated %}
+            {% url 'list_content_video' user.alias %}
+        {% else %}
+            {% url 'users:login' %}
+        {% endif%}">
+        <div class="aside-item">
+                <i class="fa-regular fa-circle-play i-small"></i>
+                <span class="aside-text">Ваши видео</span>
+                <i class="fa-regular fa-circle-play i-big"></i>
+                <span class="small-aside-text">Ваши видео</span>
+        </div>
+    </a>
+    <a class="aside-a" href="{% url 'home_playlists' %}">
+        <div class="aside-item">
+                <i class="fa-solid fa-list-ul i-small"></i>
+                <span class="aside-text">Плейлисты</span>
+                <i class="fa-solid fa-list-ul i-big"></i>
+                <span class="small-aside-text">Плейлисты</span>
+
+        </div>
+    </a>
+    <a class="aside-a" href="{% url 'history' %}">
+        <div class="aside-item">
+                <i class="fa-solid fa-clock-rotate-left i-small"></i>
+                <span class="aside-text">История</span>
+                <i class="fa-solid fa-clock-rotate-left i-big"></i>
+                <span class="small-aside-text">История</span>
+        </div>
+    </a>
+    <a class="aside-a" href="{% url 'liked_content' %}">
+        <div class="aside-item">
+                <i class="fa-regular fa-thumbs-up i-small"></i>
+                <span class="aside-text">Понравившиеся</span>
+                <i class="fa-regular fa-thumbs-up i-big"></i>
+                <span class="small-aside-text">Понравившиеся</span>
+        </div>
+    </a>
+    <hr>
+
+    <div class="aside-center">
+        <p>Подписки</p>
+        {% if user.is_authenticated %}
+            {% list_of_subs user as list %}
+            <div class="author-list">
+            {% for item in list %}
+                <a class="author-url" href="{% url 'channel' item.author.alias %}">
+                    <div class="author-item">
+                        <img src="{{ item.author.user_icon.url }}">
+                        <span class="aside-text">{{ item.author.username|truncatechars:12 }}</span>
+                    </div>
+                </a>
+            {% endfor %}
+            </div>
+            <button id="toggleListButton" class="toggle-list-button" style="display: none;">
+                <div class="author-item">
+                    <i class="fa-solid fa-arrow-down"></i>
+                    <span class="aside-text">Развернуть</span>
+                </div>
+            </button>
+        {% endif %}
+    </div>
+    <hr>
+    <div class="aside-bottom">
+        <a class="aside-a toggleFeedback" href="">
+            <div class="aside-item">
+                <i class="fa-regular fa-message"></i>
+                <span class="aside-text">Отправить отзыв</span>
+            </div>
+        </a>
+        {% include 'mainsite/feedback.html' with form=feedback_form %}
+    </div>
+    <hr>
+    <footer>
+        <p>© 2024 KazTube. Все права защищены.</p>
+        <p>Мы заботимся о вашей безопасности и конфиденциальности. Для получения дополнительной информации, пожалуйста, ознакомьтесь с нашей <a href="/privacy-policy">Политикой конфиденциальности</a>.</p>
+        <p>Следите за нами в социальных сетях:</p>
+        <div class="social-media-links">
+            <a href="https://facebook.com" target="_blank">Facebook</a>
+            <a href="https://twitter.com" target="_blank">Twitter</a>
+            <a href="https://instagram.com" target="_blank">Instagram</a>
+        </div>
+    </footer>
+</aside>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const authorList = document.querySelector('.author-list');
+    const toggleButton = document.getElementById('toggleListButton');
+    const items = authorList.querySelectorAll('.author-url');
+
+    // Проверяем количество элементов
+    if (items.length > 5) {
+        toggleButton.style.display = 'block';
+    }
+
+    toggleButton.addEventListener('click', function() {
+        authorList.classList.toggle('expanded'); // Переключаем класс для разворачивания
+
+        // Получаем иконку и текст внутри кнопки
+        const icon = toggleButton.querySelector('i');
+        const text = toggleButton.querySelector('.aside-text');
+
+        // Меняем текст и иконку в зависимости от состояния
+        if (authorList.classList.contains('expanded')) {
+            text.innerHTML = 'Свернуть';  // Меняем текст на "Свернуть"
+            icon.classList.remove('fa-arrow-down');  // Убираем стрелку вниз
+            icon.classList.add('fa-arrow-up');  // Добавляем стрелку вверх
+        } else {
+            text.innerHTML = 'Развернуть';  // Меняем текст на "Развернуть"
+            icon.classList.remove('fa-arrow-up');  // Убираем стрелку вверх
+            icon.classList.add('fa-arrow-down');  // Добавляем стрелку вниз
+        }
+    });
+});
+</script>

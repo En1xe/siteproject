@@ -1,0 +1,7 @@
+<div class="video-grid2">
+    {% for video in videos %}
+    <div class="channel-video-item">
+        {% include 'channel_video_container.html' with video=video %}
+    </div>
+    {% endfor %}
+</div>

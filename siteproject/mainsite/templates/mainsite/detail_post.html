@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+{% load user_tags %}
+
+{% block content %}
+<div class="container" id="container">
+    <div class="detail-post-space">
+        <div class="detail-post-container">
+            <div>
+                <a href="{% url 'channel' post.author.alias %}"><img src="{{ post.author.user_icon.url }}" class="post-author-img"></a>
+            </div>
+            <div class="detail-post-field">
+                <a href="{% url 'channel' post.author.alias %}" style="text-decoration: none; color: white; margin-right: 5px;">
+                    <span>{{ post.author.username }}</span>
+                </a>
+                <span style="font-size: 13px;">{{ post.creation_date|get_date }}</span>
+                <p>{{ post.text }}</p>
+                {% if post.image %}
+                <img src="{{ post.image.url }}" class="detail-post-image">
+                {% endif %}
+                <div>
+
+                    {% include 'votes_content.html' with type='post' content=post %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="comments-container">
+            <p class="comment_count">{{ post|get_comments_name }}</p>
+
+            {% include 'comment_form.html' with comment_form=comment_form %}
+
+
+        <div class="comment-list">
+            {% for comment in comments %}
+                {% include 'mainsite/comment_item.html' with comment=comment %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+{% endblock %}

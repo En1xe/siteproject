@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="container" class="container">
+    <div class="create-post-space">
+        <p class="create-post-title">Создать пост</p>
+        <div class="create-post-container">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="create-post-btn">Опубликовать</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

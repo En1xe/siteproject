@@ -1,0 +1,7 @@
+{% load user_tags %}
+
+<div class="video-grid2">
+{% for pl in playlists %}
+    {% include 'playlist_container.html' with pl=pl %}
+{% endfor %}
+</div>

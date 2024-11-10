@@ -1,0 +1,9 @@
+<div class="reply-form" id='reply-form-{{ comment.id }}' style="display: none;">
+    <img class="watch-author-img" src="{{ video.user.user_icon.url }}">
+    <form method="POST" style="width: 10%;">
+        {% csrf_token %}
+        {{ reply_form.as_p }}
+        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+        <button type="submit" class="comment-apply-btn">Ответить</button>
+    </form>
+</div>

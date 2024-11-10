@@ -1,0 +1,226 @@
+{% load static %}
+{% load user_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=video_call" />
+    <title>Главная страница</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-left">
+        <button class="menu-toggle" id="menu-toggle">
+            <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
+        </button>
+        <a href="{% url 'homepage' %}" class="site-logo">KazTube</a>
+    </div>
+    <div class="header-middle">
+
+        <div class="search-bar">
+
+            <form method="get" action="/search/" id="search-form" class="search-form">
+                <input type="text" name="query" class="search-field" id="search-input"
+                       placeholder="Введите запрос" value="{{ query }}" oninput="toggleClearButton()">
+                <button type="button" title="Очистить поиск" class="clear-btn" onclick="clearInput()">✕</button>
+                <button title="Поиск" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+
+            <div id="search-history" style="display:none;">
+                <div id="history-list">
+                    <!-- Здесь будут отображаться последние запросы -->
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="header-right">
+        <div class="upload-field">
+            <button class="dropdown-btn header-right-item" onclick="toggleDropdown()">
+                <span class="material-symbols-outlined">video_call</span>
+            </button>
+            <span class="dropdown-btn-hint1">Создать</span>
+        </div>
+        <div id="dropdownMenu" class="dropdown-content">
+            <a href="{% url 'download' %}">
+                <i class="fa-solid fa-video"></i>
+                <span class="header-text">Загрузить видео</span>
+            </a>
+            <a href="{% url 'create_post' %}">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <span class="header-text">Создать пост</span>
+            </a>
+        </div>
+
+        {% if user.is_authenticated %}
+            <button class="modal-btn header-right-item" onclick="toggleModal()">
+                <img src="{{ user|get_profile_image }}" alt="User Icon" width="40px">
+            </button>
+            <div class="modal" id="myModal">
+                <div class="modal-top">
+                    <div class="modal-top-img">
+                        <img src="{{ user|get_profile_image }}" alt="User Icon" width="70px">
+                    </div>
+                    <div class="modal-top-block">
+                        <span>{{ user.username }}</span>
+                        <span>{{ user.alias }}</span>
+                        <a href="{% url 'channel_videos' user.alias %}">Перейти на канал</a>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-middle">
+                    <a href="{% url 'users:profile_data' %}">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <span class="header-text">Аккаунт</span>
+                    </a>
+                    <form id="logout-form" action="{% url 'users:logout' %}" method="post" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="header-text">Выйти</span>
+                    </a>
+                <hr>
+                    <a href="" class="toggleFeedback">
+                        <i class="fa-regular fa-message"></i>
+                        <span class="header-text">Отправить отзыв</span>
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <a href="{% url 'users:login' %}" class="login-url header-right-item">вход</a>
+        {% endif %}
+    </div>
+</header>
+
+{% block aside %}
+{% endblock %}
+
+<section>
+    {% block content %}
+    {% endblock %}
+</section>
+
+<script src="{% static 'js/homepage_scripts.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const searchHistory = document.getElementById('search-history');
+    let preventBlur = false;
+
+    if (searchInput) {
+        searchInput.addEventListener('focus', function() {
+            fetch("{% url 'search_history' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const historyList = document.getElementById('history-list');
+                    historyList.innerHTML = '';
+                    if (data.history.length === 0) {
+                        searchHistory.style.display = 'none'; // Скрыть блок, если нет истории
+                    } else {
+                        data.history.forEach(item => {
+                            const div = document.createElement('div');
+                            div.style.display = 'flex';
+                            div.style.alignItems = 'center';
+                            div.style.marginBottom = '10px';
+
+                            // Иконка лупы
+                            const magnifyingGlass = document.createElement('i');
+                            magnifyingGlass.classList.add('fas', 'fa-search');
+                            magnifyingGlass.style.marginRight = '10px';
+
+                            // Текст запроса
+                            const textNode = document.createElement('span');
+                            textNode.textContent = item.query;
+
+                            // Кнопка удаления
+                            const deleteBtn = document.createElement('button');
+                            deleteBtn.textContent = 'X';
+                            deleteBtn.style.marginLeft = 'auto';
+
+                            // Обработка клика для предотвращения закрытия списка
+                            deleteBtn.addEventListener('mousedown', function(event) {
+                                preventBlur = true;
+                            });
+
+                            // Обработка удаления
+                            deleteBtn.addEventListener('click', function(event) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                deleteSearchQuery(item.id, div.parentNode); // Передаем ссылку на <a>
+                            });
+
+                            // Ссылка-обертка
+                            const link = document.createElement('a');
+                            link.href = `/search/?query=${encodeURIComponent(item.query)}`;
+                            link.style.textDecoration = 'none';
+                            link.style.color = 'black';
+
+                            // Собираем элементы в div
+                            div.appendChild(magnifyingGlass);
+                            div.appendChild(textNode);
+                            div.appendChild(deleteBtn);
+                            link.appendChild(div);
+                            historyList.appendChild(link);
+                        });
+                        searchHistory.style.display = 'block'; // Показываем блок, если есть история
+                    }
+                });
+        });
+
+        searchInput.addEventListener('blur', function() {
+            if (!preventBlur) {
+                searchHistory.style.display = 'none';
+            }
+            preventBlur = false;
+        });
+    }
+});
+
+function deleteSearchQuery(queryId, linkElement) {
+    fetch(`/delete_query/${queryId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Удаляем ссылку полностью из DOM
+            linkElement.remove();
+            // После удаления проверяем, есть ли другие запросы, если нет — скрываем блок
+            const historyList = document.getElementById('history-list');
+            if (historyList.children.length === 0) {
+                document.getElementById('search-history').style.display = 'none';
+            }
+        } else {
+            alert('Ошибка при удалении запроса: ' + data.message);
+        }
+    });
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+</body>
+</html>

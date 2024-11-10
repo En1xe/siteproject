@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+{% block content %}
+
+{% if not playlist %}
+
+<div class="container" id="container">
+    <p class="home-pl-title">Плейлисты</p>
+    <div class="video-grid">
+        {% if playlists %}
+        {% for pl in playlists %}
+
+            {% include 'playlist_container.html' with pl=pl %}
+
+        {% endfor %}
+        {% else %}
+            <p style="color: white; font-size: 18px; margin-left: 150px;">Здесь ничего нет.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% else %}
+
+{% include 'mainsite/detail_playlist.html' with playlist=playlist playlist_videos=playlist_videos %}
+
+{% endif %}
+{% endblock %}

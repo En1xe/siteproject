@@ -1,0 +1,24 @@
+{% load user_tags %}
+{% load static %}
+
+<div class="playlist-wrapper2">
+    {% get_last_video pl as last_video %}
+        {% if last_video %}
+        <a href="{% url 'detail_video' last_video.id %}?list={{ pl.id }}" class="search-pl-a">
+            <img src="{{ last_video.picture.url }}" class="search-video-container">
+        {% else %}
+        <a href="" class="search-pl-a">
+            <img src="{% static 'images/default_playlist_image.png' %}" class="video-container">
+        {% endif %}
+        <div class="search-video-overlay">
+            <span class="overlay-text"><i class="fa-solid fa-play"></i> Воспроизвести все</span>
+        </div>
+        <div class="search-num-of-videos">{{ pl|count_videos }} видео</div>
+        </a>
+    <div class='home-pl-text'>
+        <p class="search-playlist-title">{{ pl.title|truncatechars:40 }}</p>
+        <a href="{% url 'channel' pl.author.alias %}" class="search-author-info">{{ pl.author.username }}</a>
+        <a href="{% url 'channel' pl.author.alias %}" class="search-author-info">• Плейлист</a><br>
+        <span class="search-author-info">{{ pl.access|get_access_name }}</span>
+    </div>
+</div>

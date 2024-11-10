@@ -1,0 +1,81 @@
+{% load user_tags %}
+
+{% get_user_vote content user type as vote%}
+<button id="like-btn" class="auth-required watch-right-btn">
+    <i class="{% if vote == 'like' %}fa-solid{% else %}fa-regular{% endif %} fa-thumbs-up"></i>
+    {% content_total_likes content type %}
+</button>
+<button id="dislike-btn" class="auth-required watch-right-btn">
+    <i class="{% if vote == 'dislike' %}fa-solid{% else %}fa-regular{% endif %} fa-thumbs-down"></i>
+    {% content_total_dislikes content type %}
+</button>
+
+<script>
+document.getElementById('like-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: new URLSearchParams({
+            'action_type': 'like'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Обновляем иконки с учётом текущего состояния голосования
+        const likeBtn = document.getElementById('like-btn');
+        const dislikeBtn = document.getElementById('dislike-btn');
+
+        if (data.likes_count > 0) {
+            likeBtn.innerHTML = '<i class="fa-solid fa-thumbs-up"></i> ' + data.likes_count;
+        } else {
+            likeBtn.innerHTML = '<i class="fa-regular fa-thumbs-up"></i> ' + data.likes_count;
+        }
+
+        if (data.dislikes_count > 0) {
+            dislikeBtn.innerHTML = '<i class="fa-solid fa-thumbs-down"></i> ' + data.dislikes_count;
+        } else {
+            dislikeBtn.innerHTML = '<i class="fa-regular fa-thumbs-down"></i> ' + data.dislikes_count;
+        }
+    })
+    .catch(error => console.error('Ошибка:', error));
+});
+
+document.getElementById('dislike-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: new URLSearchParams({
+            'action_type': 'dislike'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Обновляем иконки с учётом текущего состояния голосования
+        const likeBtn = document.getElementById('like-btn');
+        const dislikeBtn = document.getElementById('dislike-btn');
+
+        if (data.likes_count > 0) {
+            likeBtn.innerHTML = '<i class="fa-solid fa-thumbs-up"></i> ' + data.likes_count;
+        } else {
+            likeBtn.innerHTML = '<i class="fa-regular fa-thumbs-up"></i> ' + data.likes_count;
+        }
+
+        if (data.dislikes_count > 0) {
+            dislikeBtn.innerHTML = '<i class="fa-solid fa-thumbs-down"></i> ' + data.dislikes_count;
+        } else {
+            dislikeBtn.innerHTML = '<i class="fa-regular fa-thumbs-down"></i> ' + data.dislikes_count;
+        }
+    })
+    .catch(error => console.error('Ошибка:', error));
+});
+</script>

@@ -1,0 +1,12 @@
+<div class="comment-form">
+    <img class="watch-author-img" src="{{ user.user_icon.url }}">
+    {% if user.is_authenticated %}
+        <form method="POST" style="width: 95.3%;">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="comment-apply-btn">Оставить комментарий</button>
+        </form>
+    {% else %}
+        <a href="{% url 'users:login' %}">Войдите, чтобы оставить комментарий.</a>
+    {% endif %}
+</div>

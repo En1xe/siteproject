@@ -1,0 +1,35 @@
+{% load user_tags %}
+
+<div class="container" id="container">
+    <div class="detail-pl-container">
+        <div class="detail-pl-info">
+            {% get_last_video playlist as last_video %}
+            <a href="{% url 'detail_video' last_video.id %}?list={{ playlist.id }}" class="detail-pl-url">
+                <img src="{{ last_video.picture.url }}" style="width: 300px; height: 180px; object-fit: cover; border-radius: 10px;">
+                <div class="detail-pl-overlay">
+                    <span class="overlay-text"><i class="fa-solid fa-play"></i> Воспроизвести все</span>
+                </div>
+            </a>
+            <p class="detail-pl-title">{{ playlist.title|truncatechars:40 }}</p>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="{{ playlist.author.user_icon.url }}" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
+                <span style="color: white; font-size: 14px; font-weight: normal;">{{ playlist.author }}</span>
+            </div>
+            <div class="detail-pl-text">
+                <span>Плейлист</span>
+                <span>• {{ playlist_videos.count }} Видео </span>
+                <span>• {{ playlist|count_views }}</span>
+                <p><a class="detail-pl-btn" href="{% url 'detail_video' last_video.id %}?list={{ playlist.id }}"><i class="fa-solid fa-play"></i> Воспроизвести все</a></p>
+            </div>
+        </div>
+        <div class="detail-pl-videos">
+            {% for pl_video in playlist_videos %}
+            <div class="detail-pl-video">
+
+                {% include 'detail_pl_video.html' with video=pl_video.video %}
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

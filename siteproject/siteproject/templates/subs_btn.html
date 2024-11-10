@@ -1,0 +1,140 @@
+<form method="POST" id="subscribe-form">
+    {% csrf_token %}
+    <input type="hidden" name="author_id" value="{{ author.id }}" />
+    <button class="auth-required {% if is_subscribed %}watch-subscribe-btn{% else %}watch-not-subscribe-btn{% endif %}" id="subscribe-btn" data-author-id="{{ author.id }}">
+        {% if is_subscribed %}
+            Вы подписаны
+        {% else %}
+            Подписаться
+        {% endif %}
+    </button>
+</form>
+
+<div id="subscribe-notification" class="channel-notification" style="display: none;"></div>
+<div id="unsubscribe-notification" class="channel-notification" style="display: none;"></div>
+
+<div id="unsubscribeModal" class="unsubscribeModal">
+    <div class="unsubscribeModal-content">
+        <p style="color: white; font-size: 16px;">Отказаться от подписки на канал "{{ author.username }}"?</p>
+        <button id="cancel-unsubscribe" class="unsubscribeModal-btn">Отмена</button>
+        <button id="confirm-unsubscribe" class="unsubscribeModal-btn">Отказаться от подписки</button>
+    </div>
+</div>
+
+<script>
+document.getElementById("subscribe-btn").addEventListener("click", function(event) {
+    event.preventDefault();
+
+    const subscribeForm = document.getElementById("subscribe-form");
+    const subscribeBtn = this;
+    const authorId = subscribeBtn.getAttribute("data-author-id");
+
+    if (!authorId) {
+        console.error('Author ID is missing!');
+        return;
+    }
+
+    const hiddenInput = subscribeForm.querySelector('input[name="author_id"]');
+    hiddenInput.value = authorId;
+
+    const actionType = subscribeBtn.innerText === 'Подписаться' ? 'subscribe' : 'unsubscribe';
+
+    // Если это кнопка "Вы подписаны", то показываем модальное окно для отписки
+    if (actionType === 'unsubscribe') {
+        openUnsubscribeModal();
+        return;
+    }
+
+    // Если это кнопка "Подписаться", продолжаем как обычно
+    const formData = new FormData(subscribeForm);
+    formData.append('action_type', actionType);
+
+    // Отправка данных без перезагрузки страницы
+    fetch(subscribeForm.action, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.is_subscribed || data.is_unsubscribed) {
+            // Обновляем текст кнопки в зависимости от действия
+            if (data.is_subscribed) {
+                subscribeBtn.innerText = 'Вы подписаны';  // Изменяем текст кнопки на "Вы подписаны"
+                subscribeBtn.classList.add('watch-subscribe-btn');  // Добавляем класс для подписанного состояния
+                subscribeBtn.classList.remove('watch-not-subscribe-btn');  // Убираем класс для состояния "Подписаться"
+            } else if (data.is_unsubscribed) {
+                subscribeBtn.innerText = 'Подписаться';  // Изменяем текст кнопки на "Подписаться"
+                subscribeBtn.classList.add('watch-not-subscribe-btn');  // Добавляем класс для не подписанного состояния
+                subscribeBtn.classList.remove('watch-subscribe-btn');  // Убираем класс для состояния "Вы подписаны"
+            }
+
+            // Показываем соответствующее уведомление
+            const subscribeNotification = document.getElementById("subscribe-notification");
+            const unsubscribeNotification = document.getElementById("unsubscribe-notification");
+
+            if (data.is_subscribed) {
+                subscribeNotification.innerHTML = `<span>Вы успешно подписались</span>`;
+                subscribeNotification.style.display = "block";
+                unsubscribeNotification.style.display = "none"; // Скрыть уведомление об отписке
+            } else if (data.is_unsubscribed) {
+                unsubscribeNotification.innerHTML = `<span>Подписка отменена</span>`;
+                unsubscribeNotification.style.display = "block";
+                subscribeNotification.style.display = "none"; // Скрыть уведомление о подписке
+            }
+
+            // Скрыть уведомление через 3 секунды
+            setTimeout(() => {
+                subscribeNotification.style.display = "none";
+                unsubscribeNotification.style.display = "none";
+            }, 3000); // 3000 миллисекунд = 3 секунды
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+});
+
+// Открытие модального окна для отписки
+function openUnsubscribeModal() {
+    document.getElementById("unsubscribeModal").style.display = 'flex'; // Показываем модальное окно
+}
+
+// Закрытие модального окна для отписки
+document.getElementById("cancel-unsubscribe").addEventListener("click", function() {
+    document.getElementById("unsubscribeModal").style.display = 'none'; // Скрываем окно
+});
+
+// Обработчик для подтверждения отписки
+document.getElementById("confirm-unsubscribe").addEventListener("click", function() {
+    const subscribeForm = document.getElementById("subscribe-form");
+    const subscribeBtn = document.getElementById("subscribe-btn");
+    const formData = new FormData(subscribeForm);
+    formData.append('action_type', 'unsubscribe'); // Указываем действие отписки
+
+    // Отправка запроса на сервер для отписки
+    fetch(subscribeForm.action, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.is_unsubscribed) {
+            // Обновляем текст кнопки и классы
+            subscribeBtn.innerText = 'Подписаться';
+            subscribeBtn.classList.add('watch-not-subscribe-btn');
+            subscribeBtn.classList.remove('watch-subscribe-btn');
+
+            // Показываем уведомление об отписке
+            const unsubscribeNotification = document.getElementById("unsubscribe-notification");
+            unsubscribeNotification.innerHTML = `<span>Подписка отменена</span>`;
+            unsubscribeNotification.style.display = "block";
+
+            // Закрываем модальное окно
+            document.getElementById("unsubscribeModal").style.display = 'none';
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка при отписке:', error);
+    });
+});
+</script>

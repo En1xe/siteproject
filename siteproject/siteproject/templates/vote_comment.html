@@ -1,0 +1,12 @@
+{% load user_tags %}
+
+
+{% get_comment_vote comment user as vote %}
+<button id="like-comment-btn-{{ comment.id }}" class="auth-required like-comment-btn" data-comment-id="{{ comment.id }}">
+    <i class="{% if vote == 'like' %}fa-solid{% else %}fa-regular{% endif %} fa-thumbs-up"></i>
+    {% comments_total_likes comment %}
+</button>
+<button id="dislike-comment-btn-{{ comment.id }}" class="auth-required dislike-comment-btn" data-comment-id="{{ comment.id }}">
+    <i class="{% if vote == 'dislike' %}fa-solid{% else %}fa-regular{% endif %} fa-thumbs-down"></i>
+    {% comments_total_dislikes comment %}
+</button>

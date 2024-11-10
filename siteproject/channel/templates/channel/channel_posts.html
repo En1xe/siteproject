@@ -1,0 +1,31 @@
+{% load user_tags %}
+
+<div>
+    {% for post in posts %}
+        <div class="detail-post-space2">
+            <div class="detail-post-container">
+                <div>
+                    <a href="{% url 'channel' post.author.alias %}"><img src="{{ post.author.user_icon.url }}" class="post-author-img"></a>
+                </div>
+                <div class="detail-post-field">
+                    <a href="{% url 'channel' post.author.alias %}" style="text-decoration: none; color: white; margin-right: 5px;">
+                        <span>{{ post.author.username }}</span>
+                    </a>
+                    <span style="font-size: 13px;">{{ post.creation_date|get_date }}</span>
+                    <p>{{ post.text }}</p>
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}" class="detail-post-image">
+                    {% endif %}
+                    <div>
+
+                        {% include 'votes_content.html' with type='post' content=post %}
+
+                        <a href="{% url 'detail_post' post.id %}" class="post-comments-url">
+                            <i class="fa-regular fa-comment"></i> {% get_comments post %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

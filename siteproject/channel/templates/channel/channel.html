@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+.text {
+    display: flex;
+    align-items: center;
+}
+</style>
+
+<div class="container" id="container">
+    <div style="margin-left: 160px;">
+        <img src="{{ user.banner.url }}" class="channel_banner">
+        <div class="channel-top-container">
+            <div>
+                <img src="{{ user.user_icon.url }}" class="channel-user-icon">
+            </div>
+            <div>
+                <p class="channel-username">{{ user.username }}</p>
+                <span>{{ user.alias }}</span>
+                <span>• {{ subscribers }}
+                {% if subscribers == 1 %}Подписчик
+                {% elif subscribers > 1 and subscribers < 5 %}Подписчика
+                    {% else %}Подписчиков
+                    {% endif %}
+                </span>
+                <span>• 0 видео</span><br>
+                <button id="toggleChannelDesc" class="channel_desc">Описание канала</button>
+
+                {% include 'subs_btn.html' with author=user %}
+
+                <div id="channelModal" class="channelModal">
+                    <div class="channelModal-content">
+                        <p style="color: white; font-size: 20px; margin: 0;">О канале</p>
+                        <p style="color: white; font-weight: normal; font-size: 15px;">{{ author.channel_description }}</p>
+                        <button class="channel-close-btn"><i class="fa-solid fa-x"></i></button>
+                        <div class="channel-about">
+                            <p style="color: white; font-size: 20px;">О канале</p>
+                            <p><i class="fa-solid fa-globe"></i><span>url</span></p>
+                            <p><i class="fa-solid fa-users"></i><span>subc</span></p>
+                            <p><i class="fa-regular fa-circle-play"></i><span>videos</span></p>
+                            <p><i class="fa-solid fa-arrow-trend-up"></i><span>views</span></p>
+                            <p><i class="fa-solid fa-info"></i><span>date</span></p>
+                            <p><i class="fa-solid fa-earth-europe"></i><span>country</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="channel-widgets">
+            <a href="{% url 'channel_videos' author.alias %}">Видео</a>
+            <a href="{% url 'channel_playlists' author.alias %}">Плейлисты</a>
+            <a href="{% url 'channel_community' author.alias %}">Сообщество</a>
+            <a href="{% url 'channel_subscription' author.alias %}">Подписки</a>
+        </div>
+    </div>
+    <hr>
+    <div style="margin-left: 160px;">
+    {% if channel_content_type == 'videos' %}
+        {% include 'channel/channel_videos.html' with videos=videos %}
+    {% elif channel_content_type == 'playlists' %}
+        {% include 'channel/channel_playlists.html' with playlists=playlists %}
+    {% elif channel_content_type == 'posts' %}
+        {% include 'channel/channel_posts.html' with posts=posts %}
+    {% elif channel_content_type == 'subscription' %}
+        {% include 'channel/channel_subscription.html' %}
+    {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Получаем кнопку и модальное окно
+    const toggleButton = document.getElementById('toggleChannelDesc');
+    const channelModal = document.getElementById('channelModal');
+    const closeButton = document.querySelector('.channel-close-btn');
+
+    // Функция для открытия модального окна
+    toggleButton.addEventListener('click', function() {
+        channelModal.style.display = 'flex'; // Показываем модальное окно
+    });
+
+    // Функция для закрытия модального окна
+    closeButton.addEventListener('click', function() {
+        channelModal.style.display = 'none'; // Скрываем модальное окно
+    });
+
+    // Закрытие модального окна при клике вне его
+    window.addEventListener('click', function(event) {
+        if (event.target === channelModal) {
+            channelModal.style.display = 'none'; // Скрываем модальное окно, если кликнули вне его
+        }
+    });
+});
+</script>
+
+{% endblock %}

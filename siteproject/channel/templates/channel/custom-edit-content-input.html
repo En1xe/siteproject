@@ -1,0 +1,32 @@
+{% if widget.is_initial %}
+<div class="custom-clearable-file-input">
+    <div class="current-file-preview">
+        <img src="{{ widget.value.url }}" alt="Текущее изображение" style="max-width: 150px; max-height: 80px;">
+    </div>
+    <div class="custom-clearable-file-field">
+        <div>
+            <button type="button" class="custom-file-button" onclick="document.getElementById('{{ widget.name }}-file-upload').click();">Изменить</button>
+            <input type="file" id="{{ widget.name }}-file-upload" name="{{ widget.name }}" class="custom-file-input" onchange="updateFileName('{{ widget.name }}')">  <!-- Убедитесь, что здесь установлен атрибут name -->
+            <span id="{{ widget.name }}-file-name" class="file-name"></span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<script>
+function updateFileName(imageType) {
+    const input = document.getElementById(imageType + '-file-upload');
+    const fileNameSpan = document.getElementById(imageType + '-file-name');
+
+    // Проверка, выбран ли файл
+    if (input.files.length > 0) {
+        const fileName = input.files[0].name; // Получаем название файла
+        fileNameSpan.innerText = fileName; // Обновляем текст в span
+        fileNameSpan.style.display = 'inline-block'; // Показываем span
+    } else {
+        fileNameSpan.innerText = 'Нет выбранного файла'; // Отображаем сообщение, если файл не выбран
+        fileNameSpan.style.display = 'none'; // Скрываем span
+    }
+}
+</script>

@@ -1,0 +1,63 @@
+{% if widget.is_initial %}
+<div class="custom-clearable-file-input">
+    <div class="current-file-preview">
+        <img src="{{ widget.value.url }}" alt="Текущее изображение" style="max-width: 100px; max-height: 100px;">
+    </div>
+
+    <div class="custom-clearable-file-field">
+        {% if widget.name == "banner" and not is_default_banner %}
+            <button type="button" id="toggle-banner-clear" class="toggle-button" onclick="toggleClear('banner')">Удалить</button>
+            <input type="hidden" name="banner_clear" id="banner_clear" value="false">
+        {% elif widget.name == "user_icon" and not is_default_user_icon %}
+            <button type="button" id="toggle-user_icon-clear" class="toggle-button" onclick="toggleClear('user_icon')">Удалить</button>
+            <input type="hidden" name="user_icon_clear" id="user_icon_clear" value="false">
+        {% endif %}
+        <div>
+            <button type="button" class="custom-file-button" onclick="document.getElementById('{{ widget.name }}-file-upload').click();">Изменить</button>
+            <input type="file" id="{{ widget.name }}-file-upload" name="{{ widget.name }}" class="custom-file-input" onchange="updateFileName('{{ widget.name }}')" accept="image/*">
+            <span id="{{ widget.name }}-file-name" class="file-name">Нет выбранного файла</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<script>
+function toggleClear(imageType) {
+    console.log("toggleClear вызван для: " + imageType);
+    const checkbox = document.getElementById(imageType + "_clear");
+    const button = document.getElementById("toggle-" + imageType + "-clear");
+
+    if (checkbox) {
+        if (checkbox.value === "false") {
+            checkbox.value = "true";  // Установить значение в true
+            button.textContent = "Отменить"; // Короткий текст
+        } else {
+            checkbox.value = "false";  // Установить значение в false
+            button.textContent = "Удалить";
+        }
+        console.log(imageType + "_clear значение: " + checkbox.value); // Логирование значения
+    } else {
+        console.error("Не найден элемент для очистки: " + imageType);
+    }
+}
+
+
+function updateFileName(imageType) {
+    const input = document.getElementById(imageType + '-file-upload');
+    const fileNameSpan = document.getElementById(imageType + '-file-name');
+
+    // Проверка, выбран ли файл
+    if (input.files.length > 0) {
+        const fileName = input.files[0].name; // Получаем название файла
+        fileNameSpan.innerText = fileName; // Обновляем текст в span
+        fileNameSpan.style.display = 'inline-block'; // Показываем span
+        console.log("Выбран файл: " + fileName); // Отладочное сообщение
+    } else {
+        fileNameSpan.innerText = 'Нет выбранного файла'; // Отображаем сообщение, если файл не выбран
+        fileNameSpan.style.display = 'none'; // Скрываем span
+        console.log("Файл не выбран"); // Отладочное сообщение
+    }
+}
+</script>
+

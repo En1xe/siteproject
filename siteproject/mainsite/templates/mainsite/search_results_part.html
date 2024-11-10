@@ -1,0 +1,20 @@
+{% if content %}
+    {% for item in content %}
+            {% if item.type == 'video' %}
+
+                {% include 'search_video_container.html' with video=item.item %}
+
+            {% elif item.type == 'user' %}
+
+                {% include 'search_user_container.html' with author=item.item %}
+
+            {% elif item.type == 'playlist' %}
+
+                {% include 'search_playlist_container.html' with pl=item.item %}
+
+            {% endif %}
+        {% endfor %}
+{% else %}
+        <p style="color: white;">Нет результатов по вашему запросу.</p>
+{% endif %}
+

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container" id="container">
+    <div class="video-grid">
+    {% for video in videos %}
+        {% include 'video_container.html' with video=video %}
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

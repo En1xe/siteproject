@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container" id="container">
+    {% if content %}
+        <div class="search-filter-container">
+            <form id="search-filters-form">
+                <input type="hidden" name="query" value="{{ query }}">
+            <div class="filter-group">
+                <label for="filter_by">Фильтровать по дате</label>
+                <select id="filter_by" name="filter_by" class="custom-access-select">
+                    <option value="all" {% if filter_by == 'all' %}selected{% endif %}>Все</option>
+                    <option value="hour" {% if filter_by == 'hour' %}selected{% endif %}>Последний час</option>
+                    <option value="today" {% if filter_by == 'today' %}selected{% endif %}>Сегодня</option>
+                    <option value="week" {% if filter_by == 'week' %}selected{% endif %}>Эта неделя</option>
+                    <option value="month" {% if filter_by == 'month' %}selected{% endif %}>Этот месяц</option>
+                    <option value="year" {% if filter_by == 'year' %}selected{% endif %}>Этот год</option>
+                </select>
+            </div>
+
+            <!-- Фильтры по типу -->
+            <div class="filter-group">
+                <label for="type_filter">Тип</label>
+                <select id="type_filter" name="type_filter" class="custom-access-select">
+                    <option value="all" {% if type_filter == 'all' %}selected{% endif %}>Все</option>
+                    <option value="video" {% if type_filter == 'video' %}selected{% endif %}>Видео</option>
+                    <option value="user" {% if type_filter == 'user' %}selected{% endif %}>Канал</option>
+                    <option value="playlist" {% if type_filter == 'playlist' %}selected{% endif %}>Плейлист</option>
+                </select>
+            </div>
+
+            <!-- Фильтры по длительности (только для видео) -->
+            <div class="filter-group">
+                <label for="duration_filter">Длительность</label>
+                <select id="duration_filter" name="duration_filter" class="custom-access-select">
+                    <option value="all" {% if duration_filter == 'all' %}selected{% endif %}>Все</option>
+                    <option value="short" {% if duration_filter == 'short' %}selected{% endif %}>Менее 4 минут</option>
+                    <option value="medium" {% if duration_filter == 'medium' %}selected{% endif %}>От 4 до 20 минут</option>
+                    <option value="long" {% if duration_filter == 'long' %}selected{% endif %}>Более 20 минут</option>
+                </select>
+            </div>
+
+            <!-- Фильтры по сортировке -->
+            <div class="filter-group">
+                <label for="sort_by">Сортировать по</label>
+                <select id="sort_by" name="sort_by" class="custom-access-select">
+                    <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Дате загрузки</option>
+                    <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Рейтингу</option>
+                    <option value="views" {% if sort_by == 'views' %}selected{% endif %}>Числу просмотров</option>
+                </select>
+            </div>
+            <div class="filter-btn-field">
+                <button type="submit">Применить фильтры</button>
+            </div>
+            </form>
+        </div>
+
+        <div class="search-results" style="padding: 30px 120px; display: flex; flex-direction: column; gap: 20px;">
+            {% include 'mainsite/search_results_part.html' %}
+        </div>
+    {% else %}
+    <p style="color: white; margin: 30px;">Ничего не было найдено по вашему запросу</p>
+    {% endif %}
+</div>
+
+<script>
+// Добавляем обработчик для отправки формы
+document.getElementById("search-filters-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Останавливаем стандартное поведение формы
+
+    // Получаем данные из формы
+    var formData = new FormData(this);
+
+    // Создаем строку параметров запроса
+    var params = new URLSearchParams();
+    formData.forEach(function(value, key) {
+        params.append(key, value);
+    });
+
+    // Строим URL с параметрами
+    const url = `/search/?${params.toString()}`;
+
+    // Отправляем запрос с методом GET
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest', // Указываем, что это AJAX-запрос
+        },
+    })
+    .then(response => response.json())  // Ожидаем JSON-ответ
+    .then(data => {
+        // Находим и обновляем только элемент с результатами поиска
+        const searchResultsContainer = document.querySelector(".search-results");
+        if (searchResultsContainer) {
+            // Присваиваем содержимое HTML, возвращенное сервером
+            searchResultsContainer.innerHTML = data.html;
+        } else {
+            console.error("Element with class 'search-results' not found.");
+        }
+    })
+    .catch(error => console.error('Error:', error));  // Логируем ошибку, если она возникла
+});
+</script>
+{% endblock %}

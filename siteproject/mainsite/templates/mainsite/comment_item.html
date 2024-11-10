@@ -1,0 +1,137 @@
+{% load user_tags %}
+
+<div class="comment-item">
+    <div>
+      <a href="{% url 'channel' comment.user.alias %}"><img class="watch-author-img" src="{{ user.user_icon.url }}"></a>
+    </div>
+    <div class="comment-item-field">
+      <a href="{% url 'channel' comment.user.alias %}" style="color: white; font-size: 15px; text-decoration: none;">
+        {{ comment.user.username }}
+      </a>
+      <span class="comment-date">{{ comment.creation_date|get_date }}</span>
+      <p style="color: white; font-weight: normal; font-size: 15px;">{{ comment.text }}</p>
+
+      <div class="comment-votes">
+
+          {% include 'vote_comment.html' with comment=comment %}
+
+          <button class="reply-button auth-required" onclick="toggleReply('{{ comment.id }}')">Ответить</button>
+      </div>
+
+      <div class="reply-form" id='reply-form-{{ comment.id }}' style="display: none;">
+          <img class="watch-author-img" src="{{ user.user_icon.url }}">
+          <form method="POST" style="width: 95.3%;">
+              {% csrf_token %}
+              {{ reply_form.as_p }}
+              <input type="hidden" name="parent_id" value="{{ comment.id }}">
+              <button type="submit" class="comment-apply-btn">Ответить</button>
+          </form>
+      </div>
+
+      {% if comment.replies.count > 0 %}
+      <button onclick="toggleReplyList('{{ comment.id }}')" class="toggle-reply-list">{{ comment.replies.count }}
+          {% if comment.replies.count == 1 %}
+              Ответ
+          {% elif comment.replies.count > 1 and comment.replies.count < 5 %}
+              Ответа
+          {% else %}
+              Ответов
+          {% endif %}
+      </button>
+      {% endif %}
+
+      <div class="reply-list" id='reply-list-{{ comment.id }}' style="display: none;">
+          {% for reply in comment.replies.all %}
+              {% include 'mainsite/reply_item.html' with reply=reply comment=comment %}
+          {% endfor %}
+      </div>
+    </div>
+</div>
+
+<script>
+// Обработчик для кнопки "like" комментария
+document.querySelectorAll('.like-comment-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        // Получаем ID комментария из data-атрибута
+        const commentId = this.getAttribute('data-comment-id');
+
+        // Отправляем запрос с action_type как 'like_comment'
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: new URLSearchParams({
+                'action_type': 'like_comment',  // передаем 'like_comment' для лайка
+                'comment_id': commentId  // ID комментария
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Обновляем отображение кнопок
+            const likeBtn = document.getElementById('like-comment-btn-' + commentId);
+            const dislikeBtn = document.getElementById('dislike-comment-btn-' + commentId);
+
+            likeBtn.innerHTML = `<i class="fa-${data.user_liked ? 'solid' : 'regular'} fa-thumbs-up"></i> ${data.likes_count}`;
+            dislikeBtn.innerHTML = `<i class="fa-${data.user_disliked ? 'solid' : 'regular'} fa-thumbs-down"></i> ${data.dislikes_count}`;
+        })
+        .catch(error => console.error('Ошибка:', error));
+    });
+});
+
+// Обработчик для кнопки "dislike" комментария
+document.querySelectorAll('.dislike-comment-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        // Получаем ID комментария из data-атрибута
+        const commentId = this.getAttribute('data-comment-id');
+
+        // Отправляем запрос с action_type как 'dislike_comment'
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: new URLSearchParams({
+                'action_type': 'dislike_comment',  // передаем 'dislike_comment' для дизлайка
+                'comment_id': commentId  // ID комментария
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Обновляем отображение кнопок
+            const likeBtn = document.getElementById('like-comment-btn-' + commentId);
+            const dislikeBtn = document.getElementById('dislike-comment-btn-' + commentId);
+
+            likeBtn.innerHTML = `<i class="fa-${data.user_liked ? 'solid' : 'regular'} fa-thumbs-up"></i> ${data.likes_count}`;
+            dislikeBtn.innerHTML = `<i class="fa-${data.user_disliked ? 'solid' : 'regular'} fa-thumbs-down"></i> ${data.dislikes_count}`;
+        })
+        .catch(error => console.error('Ошибка:', error));
+    });
+});
+
+// Функция для отображения формы ответа
+function toggleReply(commentId, userName = null) {
+    var replyForm = document.getElementById('reply-form-' + commentId);
+    var replyTextarea = replyForm.querySelector('textarea');
+
+    // Проверяем текущее состояние отображения элемента
+    if (replyForm.style.display === 'none' || replyForm.style.display === '') {
+        // Если элемент скрыт, показываем его
+        replyForm.style.display = 'flex';
+
+        if (userName) {
+            replyTextarea.value = '@' + userName + ' ';
+        } else {
+            replyTextarea.value = '';
+        }
+    } else {
+        replyForm.style.display = 'none';
+    }
+}
+</script>

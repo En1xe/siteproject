@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block aside %}
+    {% include 'aside_2.html' %}
+{% endblock %}
+
+{% block content %}
+    {% include 'users/sidebar.html' %}
+    <div class="profile-container">
+        <span class='profile-title'>Оформление</span>
+        <form method="post" enctype="multipart/form-data" style="width: 312px;">
+            {% csrf_token %}
+            <div>{{ form.non_field_errors }}</div>
+            {% for f in form %}
+                <div class="profile-form-item">
+                    <p><label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+                    <div>{{ f.errors }}</div>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="profile-apply-btn">Применить изменения</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+<div class="sidebar">
+    <p class="sidebar-title">Настройки аккаунта</p>
+    <p>
+        <a class="sidebar-item {% if request.resolver_match.url_name == 'profile_data' %}active{% endif %}" href="{% url 'users:profile_data' %}">Личные данные</a>
+    </p>
+    <p>
+        <a class="sidebar-item {% if request.resolver_match.url_name == 'profile_design' %}active{% endif %}" href="{% url 'users:profile_design' %}">Оформление</a>
+    </p>
+</div>

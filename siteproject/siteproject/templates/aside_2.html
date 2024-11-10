@@ -1,0 +1,175 @@
+<style>
+aside {
+    width: 240px;
+    background-color: #1E1E1E;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -240px;
+    z-index: 102;
+    transition: left 0.2s ease;
+}
+
+.aside-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 25px;
+    cursor: pointer;
+}
+
+.aside-a {
+    color: white;
+    text-decoration: none;
+    font-weight: 300;
+    font-size: 18px;
+}
+
+.aside.collapsed {
+    left: 0;
+}
+
+.aside-top {
+    padding-top: 13px;
+    padding-bottom: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.aside-top a, .aside-top button {
+    margin-left: 20px;
+}
+
+.aside-item:hover, .author-item:hover, .toggle-list-button:hover {
+    background: #242424;
+}
+
+.aside-item:active, .author-item:active, .toggle-list-button:active {
+    background: #303030;
+}
+
+.aside-center p {
+    color: white;
+    font-weight: 500;
+    font-size: 20px;
+    margin-left: 25px;
+}
+
+.author-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    color: white;
+    min-height: 25px;
+    padding: 5px 25px;
+}
+
+.author-item img {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+}
+
+.author-url {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+    font-weight: 400;
+    width: 100%;
+    flex: 1;
+}
+
+.author-list {
+    max-height: 175px;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+.author-list.expanded {
+    max-height: none; /* Позволить полное отображение при разворачивании */
+}
+
+.toggle-list-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    font-size: inherit;
+    cursor: pointer;
+}
+
+footer {
+    color: #DCDCDC;
+    font-size: 14px;
+    font-weight: 100;
+}
+
+footer a {
+   color: white;
+}
+
+.aside-text {
+    margin-left: 25px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Темный фон с прозрачностью */
+    opacity: 0;
+    z-index: 101; /* Позади aside */
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* Показ overlay при открытой боковой панели */
+.aside.collapsed ~ .overlay {
+    opacity: 1;
+    pointer-events: auto; /* Включаем взаимодействие с overlay */
+}
+
+.i-big {
+    display: none;
+}
+
+.small-aside-text {
+    display: none;
+}
+</style>
+
+{% include 'aside_widgets.html' %}
+<div class="overlay"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuToggle_2 = document.getElementById('menu-toggle_2');
+    const sidebar = document.getElementById('aside');
+    const mainContent = document.getElementById('container');
+    const overlay = document.querySelector('.overlay');
+
+    // Переключение боковой панели и overlay
+    menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed'); // Открытие/закрытие aside
+        overlay.classList.toggle('active'); // Показать/скрыть overlay
+    });
+
+    menuToggle_2.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed'); // Открытие/закрытие aside
+        overlay.classList.toggle('active'); // Показать/скрыть overlay
+    });
+
+    // Закрытие боковой панели и overlay при клике на overlay
+    overlay.addEventListener('click', function() {
+        sidebar.classList.remove('collapsed');
+        overlay.classList.remove('active');
+    });
+});
+</script>

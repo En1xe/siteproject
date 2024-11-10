@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+</head>
+<body>
+<div class="download-video-space">
+    <p class="download-video-title">KazTube</p>
+    <div class="download-video-container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p><button type="submit" class="download-video-btn">Подтвердить</button></p>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Обработчик для всех элементов с классом .file-input
+    document.querySelectorAll('.file-input').forEach(function(input) {
+        input.addEventListener('change', function(event) {
+            const fileName = event.target.files[0] ? event.target.files[0].name : 'Файл не выбран';
+            const fileMessageElement = document.getElementById(event.target.id + '-message');
+            fileMessageElement.textContent = fileName; // Отображаем имя файла
+
+            // Обрезаем текст, если он длиннее заданного количества символов
+            const maxLength = 20; // Измените значение, чтобы установить нужную длину
+            if (fileName.length > maxLength) {
+                fileMessageElement.textContent = fileName.slice(0, maxLength) + '...';
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

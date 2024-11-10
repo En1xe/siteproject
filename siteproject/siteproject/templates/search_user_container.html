@@ -1,0 +1,23 @@
+{% load user_tags %}
+
+<div class="user-result">
+    <a href="{% url 'channel' author.alias %}" style="text-decoration: none; display: flex; align-items: center;">
+        <div style="width: 350px; height: 100%; text-align: center;">
+          <img src="{{ author.user_icon.url }}" width="200">
+        </div>
+        <div style="height: 100%;">
+            <p style="color: white; font-size: 25px; margin: 0; margin-bottom: 8px;">{{ author.username }}</p>
+            <span class="search-author-info">{{ author.alias }}</span>
+            <span class="search-author-info">• {{ author|get_subs }}</span>
+            <div style="margin-top: 8px; color: #ACACAC; font-weight: normal; width: 300px; word-wrap: break-word; font-size: 14px;">
+                <span>{{ author.channel_description|truncatechars:75 }}</span>
+            </div>
+        </div>
+      </a>
+    <div style="display: flex; align-items: center;">
+        {% is_subscribed author user as is_subscribed %}
+
+        {% include 'subs_btn.html' with author=author %}
+
+    </div>
+</div>

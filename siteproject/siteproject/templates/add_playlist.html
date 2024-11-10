@@ -1,0 +1,114 @@
+<div id="playlistModal" class="playlistModal">
+    <div class="playlistModal-content">
+        <button class="playlist-close-btn"><i class="fa-solid fa-x"></i></button>
+        <span style="color: white; font-weight: normal; font-size: 18px;">Выберите плейлист</span>
+        <div style="display: flex; align-items: center; flex-direction: column; margin-top: 25px;">
+            <form method="post" id="playlist-form" style="display: flex; align-items: center; flex-direction: column;">
+                {% csrf_token %}
+                <input type="hidden" name="action_type" id="action-type-input" value="add_to_playlists">
+                <div class="playlist-form-field">
+                {% for playlist in playlists %}
+                    <div class="playlist-form-item">
+                        <input type="checkbox" name="playlists" value="{{ playlist.id }}" id="playlist-{{ playlist.id }}"
+                        {% if playlist.id in video_playlists %} checked {% endif %}>
+                        <label for="playlist-{{ playlist.id }}" style="color: white; margin-left: 15px; font-weight: normal">
+                            {{ playlist.title|truncatechars:14 }}
+                        </label>
+                    </div>
+                {% endfor %}
+                </div>
+                <button type="submit" class="playlist-add-btn">Добавить</button>
+            </form>
+            <button id="toggleCreationPlaylist" class="playlist-add-btn">+ Новый</button>
+        </div>
+    </div>
+</div>
+<div id="add_pl_notification">Действие успешно выполнено</div>
+
+<div id="CreationPlaylistModal" class="CreationPlaylistModal">
+    <div class="CreationPlaylistModal-content">
+        <form method="post">
+            {% csrf_token %}
+            <div>{{ playlist_form.non_field_errors }}</div>
+              {% for f in playlist_form %}
+              <p><label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+              <div>{{ f.errors }}</div>
+              {% endfor %}
+            <button type="button" class="cancel-btn" >Отмена</button>
+            <button type="submit" class="playlist-add-btn">Создать</button>
+        </form>
+    </div>
+</div>
+
+<button id="togglePlaylist" class="watch-right-btn">Сохранить</button>
+
+<script>
+// Показ модального окна PlaylistModal
+document.getElementById("togglePlaylist").addEventListener("click", function(event) {
+    event.stopPropagation(); // Останавливает всплытие события
+    const playlistModal = document.getElementById("playlistModal");
+    playlistModal.style.display = 'flex'; // Показываем модальное окно
+});
+
+// Показ модального окна CreationPlaylistModal
+document.getElementById("toggleCreationPlaylist").addEventListener("click", function(event) {
+    event.stopPropagation(); // Останавливает всплытие события
+    const playlistModal = document.getElementById("playlistModal");
+    playlistModal.style.display = 'none'; // Скрываем PlaylistModal, если оно отображается
+
+    const creationPlaylistModal = document.getElementById("CreationPlaylistModal");
+    creationPlaylistModal.style.display = 'flex'; // Показываем CreationPlaylistModal
+});
+
+// Закрытие окна при клике на кнопку "Закрыть" или "Отмена"
+document.querySelector(".playlist-close-btn").addEventListener("click", function(event) {
+    event.stopPropagation(); // Останавливает всплытие события
+    document.getElementById("playlistModal").style.display = 'none';
+});
+
+document.querySelector(".cancel-btn").addEventListener("click", function(event) {
+    event.stopPropagation(); // Останавливает всплытие события
+    document.getElementById("CreationPlaylistModal").style.display = 'none';
+});
+
+document.getElementById('playlist-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Отключаем стандартную отправку формы
+
+    const formData = new FormData(this);
+    formData.append('action_type', 'add_to_playlists'); // Устанавливаем тип действия
+
+    fetch('{% url 'detail_video' video.id %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Ошибка: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        showNotification(data.message || 'Действие выполнено');
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        showNotification('Произошла ошибка', true);
+    });
+});
+
+function showNotification(message, isError = false) {
+    const notification = document.getElementById('add_pl_notification');
+    notification.textContent = message;
+    notification.style.display = 'block';
+
+    // Скрываем уведомление через 3 секунды
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+</script>

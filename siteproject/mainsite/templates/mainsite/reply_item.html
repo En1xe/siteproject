@@ -1,0 +1,49 @@
+{% load user_tags %}
+
+<div class="reply-item" style="display: flex; gap: 10px; margin-bottom: 15px;">
+    <a href="{% url 'channel' reply.user.alias %}"><img class="watch-author-img" src="{{ user.user_icon.url }}"></a>
+    <div class="comment-item-field">
+        <a href="{% url 'channel' reply.user.alias %}" style="color: white; font-size: 15px; text-decoration: none;">
+            {{ reply.user.username }}
+        </a>
+        <span class="comment-date">{{ reply.creation_date|get_date }}</span>
+        <p style="color: white; font-weight: normal; font-size: 15px;">
+            {{ reply.text|mention_to_link:alias_dict|safe }}
+        </p>
+
+        <div class="comment-votes">
+
+            {% include 'vote_comment.html' with comment=reply %}
+
+            <button class="reply-button auth-required" onclick="toggleReply('{{ reply.id }}', '{{ reply.user.username }}')">Ответить</button>
+        </div>
+
+        <div class="reply-form" id="reply-form-{{ reply.id }}" style="display: none;">
+            <img class="watch-author-img" src="{{ user.user_icon.url }}">
+            <form method="POST" style="width: 95.3%;" onsubmit="submitReply(event, '{{ reply.id }}')">
+                {% csrf_token %}
+                {{ reply_form.as_p }}
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <button type="submit" class="comment-apply-btn">Ответить</button>
+            </form>
+        </div>
+        <div id="output-{{ reply.id }}"></div>
+
+    </div>
+</div>
+
+<script>
+function toggleReplyList(commentId) {
+    // Получаем элемент списка ответов по его id
+    var replyList = document.getElementById('reply-list-' + commentId);
+
+    // Проверяем текущее состояние отображения списка
+    if (replyList.style.display === 'none' || replyList.style.display === '') {
+        // Если элемент скрыт, показываем его
+        replyList.style.display = 'block';
+    } else {
+        // Если элемент уже виден, скрываем его
+        replyList.style.display = 'none';
+    }
+}
+</script>

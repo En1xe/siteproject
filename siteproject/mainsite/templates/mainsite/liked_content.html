@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container" id="container">
+    <p class="history-title">Понравившиеся</p>
+    <div class="history-container">
+        {% if videos %}
+            {% for video in videos %}
+                <div class="history-item" id="history-item-{{ video.id }}">
+                    {% include 'horizontal_video_container.html' with video=video %}
+                    <button class="del-history-btn" type="button" data-visit-id="{{ video.id }}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            {% endfor %}
+            {% else %}
+            <p style="color: white; font-size: 18px;">Здесь ничего нет.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div id="delete-notification">
+    Видео удалено из истории
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.del-history-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const visitId = this.getAttribute('data-visit-id');
+
+            // AJAX request to delete the record
+            fetch(`/delete-like/${visitId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',  // Ensure CSRF token is available
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Запись удалена успешно.');
+
+                    // Replace the item with a deletion message
+                    const historyItem = document.getElementById(`history-item-${visitId}`);
+                    historyItem.innerHTML = '<p class="deleted-message">Данные о просмотре этого видео удалены.</p>';
+
+                    // Show notification
+                    const notification = document.getElementById('delete-notification');
+                    notification.style.display = 'block';
+
+                    // Hide notification after 3 seconds
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 3000);
+                } else {
+                    console.error('Ошибка при удалении записи');
+                    alert('Ошибка при удалении записи');
+                }
+            })
+            .catch(error => console.error('Ошибка:', error));
+        });
+    });
+});
+</script>
+{% endblock %}

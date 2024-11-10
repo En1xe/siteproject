@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_2.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="content-aside">
+    <div class="content-aside-top">
+        <img src="{{ user.user_icon.url }}" width="180">
+        <span class="your-channel">Ваш канал</span>
+        <span class="content-aside-username">{{ user.username }}</span>
+    </div>
+
+    <div class="content-aside-menu">
+        <a class="content-aside-a" href="{% url 'list_content_video' user.alias %}">
+            <div class="content-aside-item">
+                <i class="fa-solid fa-video"></i>
+                <span class="content-aside-text">Видео</span>
+            </div>
+        </a>
+        <a class="content-aside-a" href="{% url 'list_content_post' user.alias %}">
+            <div class="content-aside-item">
+                <i class="fa-regular fa-copy"></i>
+                <span class="content-aside-text">Посты</span>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="content-container">
+    <p class="content-title">Контент на канале</p>
+    <div class="content-filter-container">
+        <i class="fa-solid fa-filter"></i>
+        <span class="content-filter">Фильтры</span>
+    </div>
+    <div class="content-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Видео</th>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Доступ</th>
+                    <th>Дата загрузки</th>
+                    <th>Просмотры</th>
+                    <th>Комментарии</th>
+                    <th>% Нравится</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for video in videos %}
+                <tr>
+                    <td>
+                        <a href="{% url 'edit_video' user.alias video.id %}" class="video-link">
+                            <img class="content-video-container" src="{{ video.picture.url }}">
+                            <div class="content-video-overlay">
+                              <span class="content-overlay-text">Редактировать видео</span>
+                            </div>
+                        </a>
+                    </td>
+                    <td>{{ video.title }}</td>
+                    <td>{{ video.description }}</td>
+                    <td>{{ video.access|get_access_name }}</td>
+                    <td>{{ video.creation_date|get_date_name }}</td>
+                    <td>{% get_views video %}</td>
+                    <td>{% get_comments video %}</td>
+                    <td>{% get_video_percent video %}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.number > 1 %}
+        <a href="?page=1"><i class="fa-solid fa-angles-left"></i></a>
+      {% endif %}
+
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-chevron-left"></i></a>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <span class="current-page">{{ num }}</span>
+        {% else %}
+          <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"><i class="fa-solid fa-chevron-right"></i></a>
+      {% endif %}
+
+        {% if page_obj.number < page_obj.paginator.num_pages %}
+            <a href="?page={{ page_obj.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% if widget.is_initial %}
+<div class="custom-file-container">
+    <label class="file-input-button" for="{{ widget.name }}">Выбрать файл</label>
+    <input type="file" name="{{ widget.name }}" id="{{ widget.name }}" class="{{ widget.attrs.class }}" accept="image/*">
+    <span class="file-chosen-message" id="{{ widget.name }}-message">{{ widget.value }}</span>
+</div>
+{% endif %}
+
+<script>
+console.log("widget.id:", '{{ widget.id }}');
+document.getElementById('{{ widget.id }}').addEventListener('change', function(event) {
+    const fileName = event.target.files[0] ? event.target.files[0].name : 'Файл не выбран';
+    const fileMessageElement = document.getElementById('{{ widget.id }}-message');
+    fileMessageElement.textContent = fileName; // Отображаем имя файла
+
+    // Обрезаем текст, если он длиннее заданного количества символов
+    const maxLength = 20; // Измените значение, чтобы установить нужную длину
+    if (fileName.length > maxLength) {
+        fileMessageElement.textContent = fileName.slice(0, maxLength) + '...';
+    }
+});
+</script>

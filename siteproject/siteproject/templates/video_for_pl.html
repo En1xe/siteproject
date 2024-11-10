@@ -1,0 +1,16 @@
+{% load user_tags %}
+
+<div class="pl-video-wrapper {% if cur_video == video %}active{% endif %}">
+  <a href="{% url 'detail_video' video.id %}?list={{ pl.id }}" style="text-decoration: none;">
+      <div class="pl-video-space">
+          <div>
+              <img src="{{ video.picture.url }}" class="pl-video-img">
+              <div class="pl-video-duration">{{ video.duration|get_video_duration }}</div>
+          </div>
+          <div class="pl-video-text">
+              <span>{{ video.title|truncatechars:60 }}</span>
+              <p style="font-weight: normal; color: #B4B4B4; margin-bottom: 0; margin-top: 6px;">{{ video.user }}</p>
+          </div>
+      </div>
+  </a>
+</div>

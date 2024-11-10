@@ -1,0 +1,2320 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+    font-family: Roboto;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    background-color: #1F1F1F;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1E1E1E;
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    top: 0;
+    z-index: 100;
+}
+
+.header-text {
+    margin-left: 10px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left a, .header-left button {
+    margin-left: 20px;
+}
+
+.menu-icon {
+    font-size: 20px;
+}
+
+.site-logo {
+    font-weight: 300;
+    font-size: 20px;
+    color: white;
+    text-decoration: none;
+}
+
+.menu-toggle {
+    border-radius: 15%;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.header-middle {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    position: relative;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 20px;
+    border-color: #484848;
+    width: 550px;
+    height: 30px;
+    padding: 4px 10px;
+    background-color: #242424;
+    color: white;
+    outline: none;
+    transition: border-color 0.1s;
+}
+
+.search-bar form {
+    display: flex;
+    flex: 1;
+}
+
+.search-bar:focus-within {
+    border-color: #909090;
+}
+
+.search-field {
+    flex: 1;
+    width: 440px;
+    background: none;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 1.2em;
+}
+
+.search-field::placeholder {
+    color: #808080;
+    font-size: 0.9em;
+}
+
+.search-btn, .clear-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+}
+
+.search-btn:hover, .clear-btn:hover {
+    background: #363636;
+    border-radius: 50%;
+}
+
+.search-btn:active, .clear-btn:active {
+    background: #474747;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-right-item {
+    margin-right: 20px;
+}
+
+.login-url {
+    color: white;
+    text-decoration: none;
+    padding: 8px;
+}
+
+.dropdown-btn, .notification-btn {
+    color: white;
+    background: none;
+    border: none;
+}
+
+.dropdown-btn-hint1 {
+    visibility: hidden;
+    font-size: 12px;
+    background: grey;
+    color: white;
+    position: absolute;
+    right: 85px;
+    top: 55px;
+    padding: 6px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.dropdown-btn:hover, .notification-btn:hover, .menu-toggle:hover, .login-url:hover {
+    background: #242424;
+    border-radius: 15%;
+}
+
+.dropdown-btn:active, .notification-btn:active, .menu-toggle:active, .login-url:active {
+    background: #303030;
+}
+
+.upload-field:hover .dropdown-btn-hint1, .notification-field:hover .dropdown-btn-hint2 {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    right: 30px;
+    top: 50px;
+    background-color: #363636;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.modal-item {
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 8px 12px;
+}
+
+.modal-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.modal-btn img {
+    border-radius: 50%;
+}
+
+.modal-top {
+    display: flex;
+}
+
+.modal-top-block span {
+    color: white;
+    padding: 2px;
+}
+
+hr {
+    height: 1px; /* Устанавливаем нужную толщину */
+    background-color: grey; /* Задаем цвет линии */
+    border: none; /* Убираем стандартные границы */
+}
+
+.modal-top-block a {
+    color: #3782C2;
+    text-decoration: none;
+    padding: 3px;
+}
+
+.modal-top-block span, .modal-top-block a {
+    display: block;
+}
+
+.FeedbackModal {
+    display: none;
+    position: fixed;
+    z-index: 500;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.Feedback-content {
+    width: 312px;
+    position: relative;
+    word-wrap: break-word;
+    background-color: #363636;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+}
+
+.closeFeedback {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.closeFeedback:hover {
+    background: #515151;
+}
+
+.closeFeedback:active {
+    background: #6C6C6C;
+}
+
+.feedback-label {
+    font-size: 20px;
+}
+
+.feedbackMessage {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.feedback-apply-btn, .edit-content-apply-btn {
+    background-color: #3E3E3E;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+.feedback-apply-btn:hover, .edit-content-apply-btn:hover {
+    background-color: #5D5D5D;
+}
+
+/* Active эффект для кнопок */
+.feedback-apply-btn:active, .edit-content-apply-btn:active {
+    background-color: #7C7C7C;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+
+.watch-title {
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+}
+
+.watch-author-img, .post-author-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+.watch-widgets {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    width: 1300px;
+}
+
+.watch-widgets-left {
+    display: flex;
+}
+
+.watch-right-btn {
+    border-radius: 15px;
+    padding: 8px;
+    border: none;
+    font-size: 16px;
+    background: #323232;
+    color: white;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.watch-right-btn:hover, .watch-subscribe-btn:hover {
+    background: #4B4B4B;
+}
+
+.watch-right-btn:active, .watch-subscribe-btn:active {
+    background: #646464;
+}
+
+.subscribe-button {
+    border: none;
+    color: black;
+    background-color: #F0F0F0;
+    border-radius: 20px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+.description-container {
+    width: 1280px;
+    background-color: #323232;
+    word-wrap: break-word;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}
+
+section {
+    margin-top: 48px;
+}
+
+.container {
+    padding: 20px;
+    margin-left: 240px;
+}
+
+.container.collapsed {
+    margin-left: 70px;
+}
+
+.watch-container {
+    padding: 20px;
+    margin-top: 48px;
+    margin-left: 80px;
+    display: flex;
+}
+
+.side-watch-container {
+
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 175px;
+    margin-left: 25px;
+    height: 100vh;
+    width: 200px;
+}
+
+.sidebar-title {
+    color: grey;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.sidebar p {
+    margin-bottom: 20px;
+}
+
+.sidebar-item {
+    font-size: 18px;
+    text-decoration: none;
+    color: white;
+    padding: 6px;
+    border-radius: 10px;
+}
+
+.sidebar-item:hover {
+    background: #3E3E3E;
+}
+
+.sidebar-item.active {
+    background: #5D5D5D;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 100px;
+    align-items: center;
+    color: white;
+}
+
+
+.profile-form-item {
+    width: 300px;
+}
+
+.profile-title {
+    margin-top: 20px;
+    color: grey;
+    font-size: 30px;
+}
+
+.profile-label {
+    font-size: 20px;
+}
+
+.profile-input, .feedback-text-input {
+    background: none;
+    color: white;
+    border: 0;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 300px;
+}
+
+.profile-input:hover, .profile-text-input:hover, .feedback-text-input:hover, .edit-content-text-input:hover {
+    border-color: #AAAAAA;
+}
+
+.profile-input:focus, .profile-text-input:focus, .feedback-text-input:focus, .edit-content-text-input:focus {
+    border-color: #FFF;
+}
+
+
+.profile-text-input {
+    background: none;
+    outline: none;
+    border: 1px solid grey;
+    border-radius: 10px;
+    width: 300px;
+    color: white;
+    padding: 5px;
+    font-size: 14px;
+    margin-top: 10px;
+    resize: none;
+}
+
+.custom-clearable-file-input {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 300px; /* Фиксированная ширина для всего блока */
+    position: relative; /* Для использования position: absolute для текста */
+}
+
+.custom-clearable-file-field {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: 15px;
+}
+
+
+.toggle-button, .custom-file-button, .profile-apply-btn {
+    background-color: #3E3E3E;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+/* Hover эффект для кнопок */
+.toggle-button:hover, .custom-file-button:hover, .profile-apply-btn:hover {
+    background-color: #5D5D5D;
+}
+
+/* Active эффект для кнопок */
+.toggle-button:active, .custom-file-button:active, .profile-apply-btn:active {
+    background-color: #7C7C7C;
+    outline: 1px solid #7C7C7C;
+    outline-offset: -1px;
+}
+
+.file-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: grey;
+    margin-left: 10px;
+    position: absolute;
+    left: 230px; /* Позиция справа от кнопки "Изменить" */
+    top: 70%; /* Вертикальное центрирование относительно кнопки */
+    transform: translateY(-50%);
+}
+
+.custom-clearable-file-input {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.custom-clearable-file-field {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: 15px;
+}
+
+.custom-file-input {
+    display: none;
+}
+
+.custom-clearable-file-input a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.custom-clearable-file-input label {
+    margin-top: 5px;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.channel_banner {
+    width: 1300px;          /* Ширина изображения */
+    height: 200px;         /* Высота изображения */
+    object-fit: cover;     /* Обрезка изображения, чтобы покрыть всю область */
+    object-position: center; /* Центрирование изображения */
+    border-radius: 20px;
+    margin-bottom: 15px;
+}
+
+.channelModal {
+    display: none;
+    position: fixed;
+    z-index: 500;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.channelModal-content {
+    word-wrap: break-word;
+    background-color: #2E2E2E;
+    margin: 10% auto;
+    padding: 20px;
+    width: 25%;
+    max-height: 500px;
+    border-radius: 10px;
+    position: relative;
+    overflow-y: auto;
+}
+
+.channelModal-content::-webkit-scrollbar {
+    width: 10px; /* Ширина прокрутки */
+}
+
+.channelModal-content::-webkit-scrollbar-track {
+    background: none; /* Цвет трека */
+}
+
+.channelModal-content::-webkit-scrollbar-thumb {
+    background: #888; /* Цвет ползунка */
+    border-radius: 5px;
+}
+
+.channelModal-content::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Цвет ползунка при наведении */
+}
+
+.channel-close-btn {
+    font-size: 20px;
+    border: none;
+    background: none;
+    color: white;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 8px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.channel-close-btn:hover {
+    background: #3E3E3E;
+}
+
+.channel-close-btn:active {
+    background: #5D5D5D;
+}
+
+.playlistModal, .CreationPlaylistModal {
+    display: none;
+    position: fixed;
+    z-index: 500;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.channel-info {
+    display: flex;
+}
+
+.channel-info-btns {
+    display: none;
+}
+
+.channel-info-btns button {
+    background: #323232;
+    border-radius: 20px;
+    border: 1px solid grey;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 30px;
+}
+
+.channel-info-btns button:hover {
+    background: #4B4B4B;
+}
+
+.channel-info-btns button:active {
+    background: #646464;
+}
+
+.playlistModal-content {
+    word-wrap: break-word;
+    background-color: #363636;
+    margin: 15% auto;
+    padding: 20px;
+    width: 200px;
+    height: 300px;
+    border-radius: 10px;
+    position: relative;
+    color: white;
+}
+
+.CreationPlaylistModal-content {
+    word-wrap: break-word;
+    background-color: #363636;
+    margin: 15% auto;
+    padding: 20px;
+    width: 200px;
+    height: 250px;
+    border-radius: 10px;
+    position: relative;
+    color: white;
+}
+
+.playlist-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    width: 35px;
+    height: 35px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playlist-close-btn:hover {
+    background: #515151;
+}
+
+.playlist-close-btn:active {
+    background: #6C6C6C;
+}
+
+.playlist-add-btn, .cancel-btn {
+    border-radius: 15px;
+    padding: 8px;
+    border: none;
+    font-size: 16px;
+    background: #515151;
+    color: white;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.playlist-add-btn:hover, .cancel-btn:hover {
+    background: #686868;
+}
+
+.playlist-add-btn:active, .cancel-btn:active {
+    background: #787878;
+}
+
+
+.videos-container {
+    display: flex;
+    flex-direction: column;
+    width: 1300px;
+}
+
+.side-watch-container {
+    margin-left: 20px;
+}
+
+.video-playlist {
+    color: white;
+    background: #272727;
+    border-radius: 10px;
+    border: 1px solid #3E3E3E;
+    width: 350px;
+    overflow: hidden;
+}
+
+#response-message p {
+     color: red;
+}
+
+.dropdown-btn, .notification-btn {
+    padding: 8px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 90px;
+    background-color: #363636;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 1;
+    border-radius: 10px;
+}
+
+.dropdown-content a, .modal-middle a {
+    color: white;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover, .modal-middle a:hover {
+    background-color: #474747;
+    border-radius: 1.1em;
+}
+
+.dropdown-content a:active, .modal-middle a:active {
+    background-color: #696969;
+}
+
+.text-gap {
+    margin-left: 21px;
+}
+
+.video-container {
+    width: 280px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.author-video-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.video-wrapper {
+    width: 280px;
+    position: relative;
+    overflow: hidden;
+}
+
+.video-wrapper a, .video-wrapper2 a {
+    text-decoration: none;
+}
+
+.video-wrapper-middle {
+    display: flex;
+    padding-top: 6px;
+}
+
+.video-wrapper-bottom {
+    margin-left: 46px;
+}
+
+.video-wrapper-title {
+    color: white;
+    font-size: 16px;
+    padding: 3px 6px;
+    line-height: 1.3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.video-wrapper-title2 {
+    color: white;
+    font-size: 16px;
+    padding: 3px 6px;
+    line-height: 1.3;
+    display: flex;
+}
+
+.video-wrapper-bottom2 {
+    padding: 3px 6px;
+}
+
+.author-name {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.author-name, .video-creation-date, .video-wrapper-views, .search-author-name {
+    color: #ACACAC;
+    font-weight: normal;
+}
+
+.duration1 {
+    position: absolute;
+    right: 7px;
+    top: 128px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.video-overlay {
+    position: absolute; /* Позволяет перекрывать изображение */
+    width: 280px;
+    height: 160px;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный фон */
+    display: flex; /* Используем flexbox для центровки текста */
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center; /* Центрируем по вертикали */
+    opacity: 0;
+    transition: opacity 0.3s; /* Плавный переход для появления текста */
+    border-radius: 12px;
+}
+
+.video-wrapper:hover .video-overlay, .video-wrapper2:hover .video-overlay {
+    opacity: 1;
+}
+
+.overlay-text {
+    color: white; /* Цвет текста */
+    font-size: 18px; /* Размер шрифта */
+    text-align: center; /* Центрируем текст */
+}
+
+.video-wrapper2 {
+    display: flex;
+    position: relative;
+    gap: 10px;
+}
+
+
+.video-wrapper-title2 {
+    color: white;
+}
+
+.video-wrapper-description {
+    color: #ACACAC;
+    font-weight: normal;
+}
+
+.duration2 {
+    position: absolute;
+    left: 229px;
+    top: 128px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.subs-top {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.subs-username {
+    color: white;
+    font-size: 24px;
+}
+
+.subs-item {
+    margin: 20px; 0;
+}
+
+.subs-container {
+    margin: 0 180px;
+}
+
+.content-aside {
+    width: 240px;
+    background-color: #1E1E1E;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 100px;
+    border-right: 1px solid #3E3E3E;
+}
+
+.content-aside-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.your-channel, .your-video {
+    margin-top: 16px;
+    margin-bottom: 8px;
+    color: white;
+    font-size: 14px;
+}
+
+.content-aside-username, .edit-content-videoname {
+    color: #969696;
+    font-size: 12px;
+}
+
+.content-aside-menu {
+    margin-top: 60px;
+}
+
+.content-aside-item {
+    color: white;
+    padding: 10px 24px;
+}
+
+.content-aside-item:hover, .edit-content-back-field:hover {
+    background: #242424;
+}
+
+.content-aside-item:active, .edit-content-back-field:active {
+    background: #303030;
+}
+
+.content-aside i {
+    font-size: 18px;
+    width: 24px;
+}
+
+.content-aside-a {
+    color: white;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.content-aside-text {
+    margin-left: 24px;
+}
+
+
+.content-container {
+    margin-left: 240px;
+}
+
+.content-title {
+    color: white;
+    font-size: 24px;
+    padding: 20px 0;
+}
+
+table {
+    width: 100%; /* Занимает всю ширину контейнера */
+    border-collapse: collapse;
+}
+
+tr {
+    border-top: 1px solid #3E3E3E;
+    border-bottom: 1px solid #3E3E3E;
+}
+
+
+th {
+    color: #969696;
+    text-align: left;
+    padding: 14px 20px;
+    font-weight: 500;
+}
+
+td {
+    color: white;
+    font-weight: normal;
+    padding: 14px 20px;
+    text-align: left;
+}
+
+tr, .content-title, .content-filter-container {
+    margin-left: 20px;
+}
+
+.content-filter {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.content-filter-container {
+    color: white;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 5px; /* Расстояние между кнопками */
+    font-size: 1.2em; /* Размер шрифта пагинатора */
+    color: white;
+    border-bottom: 1px solid #3E3E3E;
+}
+
+.pagination span {
+    padding: 0 4px;
+    font-weight: 500;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #969696;
+    padding: 0 4px;
+    font-weight: normal;
+}
+
+.video-link {
+    display: block; /* Убедитесь, что ссылка отображается как блочный элемент */
+    position: relative;
+    width: 220px; /* Добавьте эту строку, чтобы ширина ссылки совпадала */
+    height: 120px; /* Добавьте эту строку, чтобы высота ссылки совпадала */
+}
+
+.content-video-container {
+    width: 220px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.content-video-overlay {
+    position: absolute; /* Позволяет перекрывать изображение */
+    width: 220px;
+    height: 120px;
+    top: 0; /* Измените top на 0, чтобы оверлей совпадал с верхней частью изображения */
+    left: 0; /* Убедитесь, что оверлей начинается с левого края */
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный фон */
+    display: flex; /* Используем flexbox для центровки текста */
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center; /* Центрируем по вертикали */
+    opacity: 0;
+    transition: opacity 0.3s; /* Плавный переход для появления текста */
+    border-radius: 10px;
+}
+
+.video-link:hover .content-video-overlay {
+    opacity: 1; /* Измените на .video-link:hover .content-video-overlay */
+}
+
+.content-overlay-text {
+    color: white; /* Цвет текста */
+    font-size: 18px; /* Размер шрифта */
+    text-align: center; /* Центрируем текст */
+}
+
+.edit-content-container {
+    color: white;
+    margin-left: 270px;
+    position: relative;
+}
+
+.edit-content-aside {
+    width: 240px;
+    background-color: #1E1E1E;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 80px;
+    border-right: 1px solid #3E3E3E;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-content-aside .video-link, .edit-content-back-field i, .edit-content-back-field span {
+    margin-left: 10px;
+}
+
+.edit-content-aside span {
+    margin-left: 18px;
+}
+
+.edit-content-back {
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.edit-content-back-field {
+    padding: 12px;
+    margin-bottom: 20px;
+}
+
+.edit-content-label {
+    font-size: 16px;
+}
+
+.edit-content-container-title {
+    color: white;
+    font-size: 24px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.custom-access-select {
+    background-color: #3E3E3E;
+    color: white;
+    padding: 10px 8px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    outline: none;
+}
+
+.custom-access-select:hover {
+    border-color: #B4B4B4;
+}
+
+.custom-access-select:focus {
+    border-color: white;
+}
+
+.edit-content-video-info {
+    position: absolute;
+    top: 121px;
+    left: 813px;
+    display: flex;
+    flex-direction: column;
+    background-color: #363636;
+    border-radius: 6px;
+    width: 410px;
+}
+
+.edit-content-video-info label {
+    margin-top: 15px;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: #969696;
+    font-weight: normal;
+}
+
+.edit-content-video-info a {
+    margin-left: 10px;
+    color: #3782C2;
+    font-weight: 500;
+}
+
+.edit-content-video-info span {
+    margin-left: 10px;
+    color: white;
+    font-weight: 500;
+    padding-bottom: 15px;
+}
+
+.edit-content-video-info video {
+    width: 100%;
+    border-radius: 6px;
+}
+
+.edit-content-text-input {
+    background: none;
+    color: white;
+    border: 0;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 500px;
+    resize: none;
+}
+
+.edit-content-copy-button {
+    background-color: #515151;
+    border: none;
+    outline: none;
+    width: 100px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.edit-content-copy-button:hover {
+    background-color: #6C6C6C;
+}
+
+.edit-content-copy-button:active {
+    background-color: #A2A2A2;
+}
+
+.copy-message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* Класс для показа сообщения */
+.copy-message.show {
+    opacity: 1;
+}
+
+.edit-post-url {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    background-color: #303030;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.edit-post-url:hover, .post-link:hover {
+    background-color: #484848;
+}
+
+.edit-post-url:active, .post-link:active {
+    background-color: #606060;
+}
+
+.post-link {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    background-color: #303030;
+    padding: 8px;
+    border-radius: 10px;
+    width: 180px;
+    margin-left: 20px;
+}
+
+.home-pl-title {
+    color: white;
+    font-size: 40px;
+    font-weight: 600;
+    margin-left: 150px;
+}
+
+.history-title {
+    color: white;
+    font-size: 40px;
+    font-weight: 600;
+    margin-left: 150px;
+}
+
+.history-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-left: 150px;
+}
+
+.history-item {
+    display: flex;
+}
+
+.del-history-btn {
+    width: 40px;
+    height: 40px;
+    margin-left: 20px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    outline: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.del-history-btn:hover {
+    background-color: #3E3E3E;
+}
+
+.del-history-btn:active {
+    background-color: #5D5D5D;
+}
+
+.deleted-message {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+    margin-top: 10px;
+    opacity: 1;
+}
+
+#delete-notification {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    opacity: 0.9;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+.playlist-title {
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    margin: 4px 0;
+}
+
+.home-pl-text span {
+    color: #969696;
+    font-weight: normal;
+}
+
+.home-pl-item {
+    width: 280px;
+    position: relative;
+    overflow: hidden;
+}
+
+.playlist-video-overlay {
+    position: absolute;
+    width: 280px;
+    height: 160px;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 10px;
+}
+
+.home-pl-item a:hover .playlist-video-overlay {
+    opacity: 1;
+}
+
+.num-of-videos {
+    position: absolute;
+    right: 7px;
+    top: 128px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.channel-user-icon {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 120px;
+}
+
+.channel-top-container {
+    display: flex;
+    gap: 10px;
+}
+
+.channel-username {
+    color: white;
+    font-size: 40px;
+    margin: 0;
+}
+
+.channel-top-container span {
+    color: #969696;
+    font-weight: normal;
+}
+
+.channel_desc {
+    color: white;
+    background: #3E3E3E;
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    padding: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.channel_desc:hover {
+    background: #5D5D5D;
+}
+
+.channel_desc:active {
+    background: #7C7C7C;
+}
+
+.channel-about i {
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+.channel-about span {
+    color: white;
+    font-weight: 300;
+    margin-left: 20px;
+    font-size: 18px;
+}
+
+.channel-subscribe-btn {
+    color: black;
+    background: white;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.channel-subscribe-btn:hover {
+    background: #D2D2D2;
+}
+
+.channel-notification {
+    background-color: white;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    display: none;
+    z-index: 1000;
+}
+
+.unsubscribeModal {
+    display: none; /* Скрыть модальное окно по умолчанию */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    justify-content: center; /* Выравнивание по центру */
+    align-items: center; /* Выравнивание по центру */
+}
+
+.unsubscribeModal-content {
+    background-color: #3E3E3E;
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    width: 400px;
+}
+
+.unsubscribeModal-btn {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    background: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+}
+
+.unsubscribeModal-btn:hover {
+    background-color: #5D5D5D;
+}
+
+.unsubscribeModal-btn:active {
+    background-color: #7C7C7C;
+}
+
+.download-video-container {
+    padding: 30px;
+    background-color: #242424;
+    border-radius: 20px;
+    color: white;
+    width: 600px;
+}
+
+.download-video-title {
+    font-size: 80px;
+    font-weight: 300;
+    color: white;
+    margin: 50px 0;
+}
+
+.download-video-space {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.download-video-btn, .create-post-btn {
+    background-color: #3E3E3E;
+    color: white;
+    padding: 10px 26px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+.download-video-btn:hover, .create-post-btn:hover {
+    background-color: #5D5D5D;
+}
+
+.download-video-btn:active, .create-post-btn:active {
+    background-color: #7C7C7C;
+}
+
+.create-post-title {
+    color: white;
+    font-size: 40px;
+}
+
+.create-post-space {
+    margin-left: 100px;
+}
+
+.create-post-container {
+    color: white;
+}
+
+.watch-not-subscribe-btn {
+    color: black;
+    background: white;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.watch-not-subscribe-btn:hover {
+    background: #E4E4E4;
+}
+
+
+.watch-subscribe-btn {
+    color: white;
+    background: #323232;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.comment-form, .reply-form  {
+    display: flex;
+    max-width: 100%;
+    width: 100%;
+}
+
+.comment-form p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.comment-item {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.comment-item-field {
+    width: 100%;
+}
+
+.comment-input-field {
+    resize: none;
+    width: 100%;
+    height: 80px;
+    line-height: 1.5;
+    margin-left: 10px;
+    background: none;
+    color: white;
+    border: none;
+    border: 1px solid grey;
+    border-radius: 10px;
+    outline: none;
+    font-weight: normal;
+    font-size: 17px;
+    padding: 8px 5px;
+    max-width: 100%;
+}
+
+.comment-input-field:focus {
+    border-color: white;
+}
+
+.comment-apply-btn {
+    border-radius: 15px;
+    padding: 8px;
+    border: none;
+    font-size: 16px;
+    background: #323232;
+    color: white;
+    cursor: pointer;
+    margin: 0 2px;
+    float: right;
+}
+
+.comment-apply-btn:hover {
+    background: #4B4B4B;
+}
+
+.comment-apply-btn:active {
+    background: #646464;
+}
+
+.comment-date {
+    color: #969696;
+    font-weight: normal;
+    font-size: 15px;
+}
+
+.reply-button {
+    border-radius: 20px;
+    padding: 5px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.reply-button:hover {
+    background: #4B4B4B;
+}
+
+.reply-button:active {
+    background: #646464;
+}
+
+.toggle-reply-list {
+    font-size: 17px;
+    color: #4A92CF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+.toggle-reply-list:hover {
+    background: #1C3D5A;
+}
+
+.toggle-reply-list:active {
+    background: #26547E ;
+}
+
+
+.custom-file-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.file-input-button {
+    background-color: #3E3E3E;
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+}
+
+.file-input-button:hover {
+    background: #4E4E4E;
+    border-color: #969696;
+}
+
+.file-input-button:active {
+    background: #5D5D5D;
+    border-color: white;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-chosen-message {
+    margin-left: 15px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    display: inline-block;
+}
+
+.video-input {
+    background: none;
+    color: white;
+    border: 0;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.video-input-area {
+    background: none;
+    color: white;
+    border: 0;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 100%;
+    height: 100px;
+    resize: none;
+}
+
+.post-input-area {
+    background: none;
+    color: white;
+    border: 0;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 600px;
+    resize: none;
+}
+
+.like-comment-btn, .dislike-comment-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.playlist-text-input {
+    background: none;
+    outline: none;
+    border: 1px solid grey;
+    border-radius: 10px;
+    color: white;
+    padding: 5px;
+    font-size: 14px;
+    margin-top: 10px;
+    resize: none;
+}
+
+.playlist-form-item {
+    width: 210px;
+    padding: 5px 0;
+}
+
+.playlist-form-field {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mention-link {
+    color: #4A92CF;
+    text-decoration: none;
+}
+
+.detail-post-container {
+    display: flex;
+    gap: 10px;
+    width: 700px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    font-weight: normal;
+}
+
+.comment_count {
+    color: white;
+    font-size: 23px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.detail-post-space {
+    margin-left: 100px;
+    width: 710px;
+}
+
+.detail-post-field {
+    width: 630px;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+.detail-post-image {
+    width: 600px;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.home-pl-container {
+    display: flex;
+}
+
+.watch-pl-title {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.watch-pl-field {
+    color: #B4B4B4;
+    font-weight: normal;
+    font-size: 14px;
+    padding: 6px 10px;
+}
+
+.pl-video-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.pl-video-wrapper:hover {
+    background: #2F2F2F;
+}
+
+.pl-video-wrapper.active {
+    background: #3F3F3F;
+}
+
+
+.pl-video-duration {
+    position: absolute;
+    right: 240px;
+    top: 45px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.pl-video-img {
+    width: 100px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.pl-video-space {
+    display: flex;
+    padding: 10px;
+}
+
+.pl-video-text {
+    color: white;
+    margin-left: 6px;
+    font-size: 15px;
+    padding-right: 20px;
+}
+
+#add_pl_notification {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    opacity: 0.9;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+.watch-pl-list {
+    max-height: 430px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.detail-pl-container{
+    display: flex;
+}
+
+.detail-pl-info {
+    background: #272727;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.detail-pl-title {
+    color: white;
+    font-size: 26px;
+}
+
+.detail-pl-text {
+    margin-top: 10px;
+    color: #C8C8C8;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.detail-pl-overlay {
+    position: absolute; /* Позволяет перекрывать изображение */
+    width: 300px;
+    height: 180px;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный фон */
+    display: flex; /* Используем flexbox для центровки текста */
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center; /* Центрируем по вертикали */
+    opacity: 0;
+    transition: opacity 0.3s; /* Плавный переход для появления текста */
+    border-radius: 10px;
+}
+
+.detail-pl-url {
+    position: relative;
+    width: 300px;
+    height: 180px;
+    display: block;
+}
+
+.detail-pl-url:hover .detail-pl-overlay {
+    opacity: 1;
+}
+
+.detail-pl-btn {
+    border-radius: 15px;
+    padding: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    background: white;
+    color: black;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.detail-pl-btn:hover {
+    background: #E6E6E6;
+}
+
+.detail-pl-btn:active {
+    background: #C8C8C8;
+}
+
+.detail-pl-videos {
+    padding: 10px 20px;
+}
+
+.detail-pl-video:hover {
+    background: #2A2A2A;
+}
+
+.detail-pl-video {
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+.channel-videos-list {
+    display: flex;
+}
+
+.video-grid2 {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+}
+
+.detail-post-space2 {
+    margin-top: 50px;
+}
+
+.post-comments-url {
+    border-radius: 15px;
+    padding: 8px;
+    border: none;
+    font-size: 16px;
+    background: #323232;
+    color: white;
+    cursor: pointer;
+    margin: 0 2px;
+    text-decoration: none;
+}
+
+.post-comments-url:hover, .watch-subscribe-btn:hover {
+    background: #4B4B4B;
+}
+
+.post-comments-url:active, .watch-subscribe-btn:active {
+    background: #646464;
+}
+
+.channel-widgets {
+    margin: 20px 0;
+}
+
+.channel-widgets a {
+    border-radius: 15px;
+    padding: 8px;
+    border: none;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    margin: 0 2px;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.channel-widgets a:hover {
+    background: #2A2A2A;
+}
+
+.channel-widgets a:active {
+    background: #363636;
+}
+
+.search-video-container {
+    width: 360px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.search-video-overlay {
+    position: absolute; /* Позволяет перекрывать изображение */
+    width: 360px;
+    height: 220px;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный фон */
+    display: flex; /* Используем flexbox для центровки текста */
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center; /* Центрируем по вертикали */
+    opacity: 0;
+    transition: opacity 0.3s; /* Плавный переход для появления текста */
+    border-radius: 12px;
+}
+
+.video-wrapper2 .search-video-a:hover .search-video-overlay, .playlist-wrapper2 .search-pl-a:hover .search-video-overlay {
+    opacity: 1;
+}
+
+.search-duration {
+    position: absolute;
+    left: 308px;
+    top: 187px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.search-video-wrapper-title {
+    color: white;
+    font-size: 20px;
+    margin: 0;
+    padding-bottom: 5px;
+}
+
+#search-history {
+    width: 570px;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: #2A2A2A;
+    border-radius: 10px;
+    padding: 6px 0;
+}
+
+#history-list div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 3px 10px;
+    color: white;
+}
+
+#history-list div:hover {
+    background: #353535;
+}
+
+
+#history-list i {
+    margin-left: 5px;
+}
+
+#history-list button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+    border-radius: 50%;
+    padding: 4px 8px;
+    margin-right: 10px;
+}
+
+#history-list button:hover {
+    background: #404040;
+}
+
+#history-list button:active {
+    background: #4B4B4B;
+}
+
+.user-result {
+    padding: 10px;
+    display: flex;
+    height: 140px;
+}
+
+.search-author-info {
+    color: #ACACAC;
+    font-weight: normal;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.search-num-of-videos {
+    position: absolute;
+    left: 285px;
+    top: 188px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.search-playlist-title {
+    color: white;
+    font-size: 20px;
+    margin: 0;
+    padding-bottom: 5px;
+}
+
+.playlist-wrapper2 {
+    display: flex;
+    position: relative;
+    gap: 10px;
+}
+
+.search-filter-container {
+    margin-left: 100px;
+}
+
+#search-filters-form {
+    display: flex;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 0 10px;
+}
+
+.filter-group label {
+    color: white;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.filter-btn-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-btn-field button {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+.filter-btn-field button:hover {
+    background: #E6E6E6;
+}
+
+.filter-btn-field button:active {
+    background: #D2D2D2;
+}

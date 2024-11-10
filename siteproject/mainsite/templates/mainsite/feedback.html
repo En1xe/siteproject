@@ -1,0 +1,52 @@
+<div id="FeedbackModal" class="FeedbackModal">
+    <div class="Feedback-content">
+        <form id="feedbackForm">
+            {% csrf_token %}
+            {% for f in form %}
+                <label class="feedback-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                {{ f }}
+                <div class="error">{{ f.errors }}</div>
+            {% endfor %}
+            <button type="submit" class="feedback-apply-btn">Отправить отзыв</button>
+        </form>
+        <div id="feedbackMessage" class="feedbackMessage" style="display: none;">Спасибо за ваш отзыв!</div>
+        <span id="closeFeedback" class="closeFeedback"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+</div>
+
+<script>
+function getCSRFToken() {
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    if (cookie.startsWith('csrftoken=')) {
+      return cookie.substring('csrftoken='.length);
+    }
+  }
+  return null;
+}
+
+const feedbackUrl = "{% url 'submit_feedback' %}";
+
+document.getElementById('feedbackForm').onsubmit = function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch(feedbackUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('feedbackMessage').style.display = 'block';
+            this.reset();
+        } else {
+            console.error(data.errors);
+        }
+    });
+};
+</script>

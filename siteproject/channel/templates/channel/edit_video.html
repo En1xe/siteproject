@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+
+{% block aside %}
+{% include 'aside_2.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="edit-content-aside">
+
+    <a class="edit-content-back" href="javascript:history.back()">
+        <div class="edit-content-back-field">
+        <i class="fa-solid fa-arrow-left-long"></i>
+            <span >Вернуться к контенту</span>
+        </div>
+    </a>
+    <a href="{% url 'detail_video' video.pk %}" class="video-link">
+        <img class="content-video-container" src="{{ video.picture.url }}">
+        <div class="content-video-overlay">
+          <span class="content-overlay-text">Cмотреть видео</span>
+        </div>
+    </a>
+    <span class="your-video">Ваше видео</span>
+    <span class="edit-content-videoname">{{ video.title|truncatechars:30 }}</span>
+</div>
+<div class="edit-content-container">
+    <span class="edit-content-container-title">Сведения о видео</span>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for f in form %}
+            <p><label class="edit-content-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+            <div>{{ f.errors }}</div>
+        {% endfor %}
+        <button class="edit-content-apply-btn" type="submit">Применить изменения</button>
+    </form>
+</div>
+<div class="edit-content-video-info">
+    <video controls>
+        <source src="{{ video.file.url }}" type="video/mp4">
+    </video>
+    <label>Ссылка на видео:</label>
+    <a href="{% url 'detail_video' video.id %}" id="videoLink">{% url 'detail_video' video.id %}</a>
+    <button onclick="copyToClipboard()" class="edit-content-copy-button">Копировать ссылку</button>
+    <label>Название файла:</label>
+    <span>{{ video_file_name }}</span>
+    <div id="copyMessage" class="copy-message">
+        <span>Текст был скопирован в буфер обмена</span>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const videoLink = document.getElementById("videoLink").href;
+    navigator.clipboard.writeText(videoLink).then(() => {
+        // Показать сообщение
+        const copyMessage = document.getElementById("copyMessage");
+        copyMessage.classList.add("show");
+
+        // Убрать сообщение через 3 секунды
+        setTimeout(() => {
+            copyMessage.classList.remove("show");
+        }, 3000);
+    }).catch(err => {
+        console.error("Ошибка копирования ссылки: ", err);
+    });
+}
+</script>
+{% endblock %}

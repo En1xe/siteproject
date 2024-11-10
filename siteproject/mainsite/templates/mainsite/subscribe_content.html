@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="container" class="container">
+    <div class="subs-container">
+        {% if subscribe_videos %}
+        {% for video in subscribe_videos %}
+        <div class="subs-item">
+            <div class="subs-top">
+                <img src="{{ video.user.user_icon.url }}" width="50">
+                <span class="subs-username">{{ video.user.username }}</span>
+            </div>
+            {% include 'horizontal_video_container.html' with video=video %}
+        </div>
+        <hr class="subs-hr">
+        {% endfor %}
+        {% else %}
+        <p style="color: white; font-size: 18px; margin-top: 150px;">Здесь ничего нет.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
