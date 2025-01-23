@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ViewDoesNotExist
 from django.db.models import Q, Count, ExpressionWrapper, F, IntegerField, QuerySet
 from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404, render
@@ -170,7 +171,6 @@ def delete_query(request, request_id):
 class BaseFeedbackView(View):
     form_class = FeedbackForm
     template_name = 'mainsite/feedback.html'
-
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -363,6 +363,7 @@ class DetailVideoView(DetailView, BaseFeedbackView):
             context['playlist'] = PlayListModel.objects.get(id=playlist)
             context['num_of_pl_videos'] = playlist_videos.count()
 
+        context['side_videos'] = VideoModel.objects.exclude(id=video.id)
         context['video_playlists'] = VideoPlayListModel.objects.filter(video=self.object).values_list('playlist_id', flat=True)
         context['playlists'] = PlayListModel.objects.filter(user=self.request.user)
         context['author'] = author
@@ -417,12 +418,23 @@ class DetailVideoView(DetailView, BaseFeedbackView):
             reply.save()
             return redirect('detail_video', uuid=video.id)
 
-        elif action_type == 'add_to_playlists' and playlists:
-            for playlist_id in playlists:
-                playlist = get_object_or_404(PlayListModel, id=playlist_id)
-                if not VideoPlayListModel.objects.filter(video=video, playlist=playlist).exists():
+
+        elif action_type == 'add_to_playlists':
+
+            # Удаляем все старые записи
+
+            VideoPlayListModel.objects.filter(video=video).delete()
+
+            # Если есть выбранные плейлисты, добавляем записи
+
+            if playlists:
+
+                for playlist_id in playlists:
+                    playlist = get_object_or_404(PlayListModel, id=playlist_id)
+
                     VideoPlayListModel.objects.create(video=video, playlist=playlist)
-            return JsonResponse({'message': 'Видео добавлено в выбранные плейлисты.'})
+
+            return JsonResponse({'message': 'Плейлисты обновлены.'})
 
         elif action_type == 'remove_from_playlists' and playlists:
             for playlist_id in playlists:

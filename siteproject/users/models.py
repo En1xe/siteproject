@@ -26,22 +26,25 @@ class User(AbstractUser):
             self.alias = generate_key()
         super().save(*args, **kwargs)
 
-    def is_default_banner(self):
-        return self.banner and self.banner.name == 'default_banner/default_banner.png'
-
-    def is_default_user_icon(self):
-        return self.user_icon and self.user_icon.name == 'default_icon/user_icon.png'
+    def is_default_field(self, field):
+        return self.banner.name == 'default_banner/default_banner.png' if field == 'banner' \
+        else self.user_icon.name == 'default_icon/user_icon.png'
 
 
-class PasswordResetCode(models.Model):
+class SecurityCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     code = models.CharField(max_length=6)
-    expiration_time = models.DateTimeField()
-
-    def is_valid(self):
-        return timezone.now() < self.expiration_time
+    expiration_time = models.DateTimeField(null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    new_email = models.EmailField(null=True, blank=True)
 
     @staticmethod
     def generate_code():
-        return f"{random.randint(100000, 999999)}"
+        from django.utils.crypto import get_random_string
+        return get_random_string(length=6, allowed_chars='0123456789')
+
+    def is_valid(self):
+        """Проверяет, не истек ли срок действия кода."""
+        from django.utils.timezone import now
+        return now() <= self.expiration_time
 

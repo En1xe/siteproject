@@ -15,14 +15,14 @@
 
 <div class="container" id="container">
     <div style="margin-left: 160px;">
-        <img src="{{ user.banner.url }}" class="channel_banner">
+        <img src="{{ author.banner.url }}" class="channel_banner">
         <div class="channel-top-container">
             <div>
-                <img src="{{ user.user_icon.url }}" class="channel-user-icon">
+                <img src="{{ author.user_icon.url }}" class="channel-user-icon">
             </div>
             <div>
-                <p class="channel-username">{{ user.username }}</p>
-                <span>{{ user.alias }}</span>
+                <p class="channel-username">{{ author.username }}</p>
+                <span>{{ author.alias }}</span>
                 <span>• {{ subscribers }}
                 {% if subscribers == 1 %}Подписчик
                 {% elif subscribers > 1 and subscribers < 5 %}Подписчика
@@ -39,15 +39,6 @@
                         <p style="color: white; font-size: 20px; margin: 0;">О канале</p>
                         <p style="color: white; font-weight: normal; font-size: 15px;">{{ author.channel_description }}</p>
                         <button class="channel-close-btn"><i class="fa-solid fa-x"></i></button>
-                        <div class="channel-about">
-                            <p style="color: white; font-size: 20px;">О канале</p>
-                            <p><i class="fa-solid fa-globe"></i><span>url</span></p>
-                            <p><i class="fa-solid fa-users"></i><span>subc</span></p>
-                            <p><i class="fa-regular fa-circle-play"></i><span>videos</span></p>
-                            <p><i class="fa-solid fa-arrow-trend-up"></i><span>views</span></p>
-                            <p><i class="fa-solid fa-info"></i><span>date</span></p>
-                            <p><i class="fa-solid fa-earth-europe"></i><span>country</span></p>
-                        </div>
                     </div>
                 </div>
             </div>

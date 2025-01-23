@@ -28,7 +28,7 @@ ACCESS_TYPE = (
 class VideoModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100, db_index=True)
-    description = models.CharField(max_length=1000, db_index=True)
+    description = models.CharField(max_length=1000, db_index=True, blank=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='user', db_index=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     access = models.CharField(choices=ACCESS_TYPE, max_length=100, default='public')

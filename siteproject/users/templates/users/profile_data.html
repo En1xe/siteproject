@@ -6,16 +6,53 @@
 
 {% block content %}
 {% include 'users/sidebar.html' %}
-<div class="profile-container">
-    <span class='profile-title'>Личные данные</span>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div>{{ form.non_field_errors }}</div>
-      {% for f in form %}
-      <p><label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
-      <div>{{ f.errors }}</div>
-      {% endfor %}
-      <p><button type="submit" class="profile-apply-btn">Применить изменения</button></p>
-    </form>
+<div class="profile-space">
+    <div class="profile-container">
+        <span class='profile-title'>Личные данные</span>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div>{{ form.non_field_errors }}</div>
+          {% for f in form %}
+            <div class="profile-element">
+                <label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                {{ f }}
+                <div>{{ f.errors }}</div>
+                <button type="submit" class="profile-apply-btn">Применить изменения</button>
+            </div>
+          {% endfor %}
+        </form>
+        <div class="profile-element">
+            <span class="profile-element-title">Пароль</span>
+            <button type="button" class="profile-apply-btn" onclick="sendSecurityCode('change_password')">Изменить пароль</button>
+        </div>
+        <div class="profile-element">
+            <span class="profile-element-title"> Адрес почты</span>
+            <input value="{{ user.email }}" class="profile-input" readonly>
+            <button type="button" class="profile-apply-btn" onclick="sendSecurityCode('change_email')">Изменить почту</button>
+        </div>
+    </div>
 </div>
+
+<script>
+function sendSecurityCode(action) {
+    fetch("{% url 'users:send_code' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: new URLSearchParams({
+            "action": action
+        })
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;  // Перенаправление на страницу проверки кода
+        }
+    })
+    .catch(error => {
+        console.error("Ошибка при отправке кода:", error);
+    });
+}
+</script>
 {% endblock %}

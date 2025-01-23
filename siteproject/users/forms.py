@@ -58,16 +58,12 @@ class RegistrationForm(UserCreationForm):
 class ProfileDataForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
-        fields = ['username', 'password', 'email']
+        fields = ['username']
         labels = {
-            'username': 'Имя пользователя',
-            'password': 'Пароль',
-            'email': 'Адрес почты'
+            'username': 'Имя пользователя'
         }
         widgets = {
-            'email': forms.EmailInput(attrs={'class': 'profile-input'}),
-            'username': forms.TextInput(attrs={'class': 'profile-input'}),
-            'password': forms.TextInput(attrs={'class': 'profile-input'}),
+            'username': forms.TextInput(attrs={'class': 'profile-input'})
         }
 
 
@@ -78,13 +74,22 @@ class CustomClearableFileInput(forms.ClearableFileInput):
         kwargs.setdefault('attrs', {}).update({'class': 'custom-file-input'})
         super().__init__(*args, **kwargs)
 
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        user = getattr(self, 'user', None)
+
+        context['is_default_banner'] = user.is_default_field('banner')
+        context['is_default_user_icon'] = user.is_default_field('user_icon')
+
+        return context
+
 
 class ProfileDesignForm(forms.ModelForm):
-    alias = forms.CharField(max_length=17, label='Псевдоним', widget=forms.TextInput(attrs={'class': 'profile-input'}))
+    alias = forms.CharField(max_length=17, min_length=3, label='Псевдоним', widget=forms.TextInput(attrs={'class': 'profile-input alias-input'}))
 
     class Meta:
         model = get_user_model()
-        fields = ['banner', 'user_icon', 'alias', 'channel_description']  # Добавьте сюда ваши скрытые поля
+        fields = ['banner', 'user_icon', 'alias', 'channel_description']
         labels = {
             'banner': 'Баннер',
             'user_icon': 'Фото профиля',
@@ -93,20 +98,30 @@ class ProfileDesignForm(forms.ModelForm):
         widgets = {
             'banner': CustomClearableFileInput(attrs={'class': 'custom-file-input'}),
             'user_icon': CustomClearableFileInput(attrs={'class': 'custom-file-input'}),
-            'channel_description': forms.Textarea(attrs={'class': 'profile-text-input',
-                                                         'placeholder': 'Расскажите аудитории о своем канале.'}),
+            'channel_description': forms.Textarea(attrs={'class': 'profile-text-input', 'placeholder': 'Расскажите аудитории о своем канале.'})
         }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if self.user:
+            self.fields['banner'].widget.user = self.user
+            self.fields['user_icon'].widget.user = self.user
 
     def clean_alias(self):
         alias = self.cleaned_data['alias']
-        if (re.search(r'@[^A-Za-z0-9-_].', alias) and
-                get_user_model().objects.filter(alias=alias).exists()):
-            raise ValidationError("Псевдоним должен состоять из латинский букв, цифр, символов дефис или нижнее подчеркивание.")
+        existing_alias = get_user_model().objects.filter(alias=alias)
+        msg = ''
+
+        if re.search(r'@[^A-Za-z0-9-_]+', alias):
+            msg = "Псевдоним должен состоять из латинский букв, цифр, символов дефис или нижнее подчеркивание!"
+            raise ValidationError(msg)
+        elif existing_alias.exists() and existing_alias[0].alias != self.user.alias:
+            msg = "Такой псевдоним уже существует!"
+            raise ValidationError(msg)
+
         return alias
-
-
-class PasswordResetRequestForm(forms.Form):
-    email = forms.EmailField(label='Адрес почты', widget=forms.TextInput(attrs={'class': 'login-input'}))
 
 
 class CodeVerificationForm(forms.Form):
@@ -126,7 +141,14 @@ class CodeVerificationForm(forms.Form):
 
 class CustomSetPasswordForm(SetPasswordForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        # Извлекаем user из kwargs
+        user = kwargs.pop('user', None)  # Передаем user в kwargs
+        super().__init__(user, *args, **kwargs)  # Передаем оставшиеся параметры родительскому конструктору
+
+        # Устанавливаем пользователя
+        self.user = user
+
+        # Меняем метки и виджеты полей
         self.fields['new_password1'].label = "Новый пароль"
         self.fields['new_password2'].label = "Подтверждение пароля"
         self.fields['new_password1'].widget = forms.PasswordInput(attrs={
@@ -139,11 +161,29 @@ class CustomSetPasswordForm(SetPasswordForm):
         })
 
     def clean_new_password2(self):
-        password1 = self.cleaned_data.get('new_password1')
-        password2 = self.cleaned_data.get('new_password2')
+        password1 = self.cleaned_data.get('new_password1', None)
+        password2 = self.cleaned_data.get('new_password2', None)
 
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Пароли не совпадают.")
 
         return password2
+
+
+class ChangeEmailForm(forms.ModelForm):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'class': 'login-input',
+        'placeholder': 'Новый адрес почты'}))
+
+    class Meta:
+        model = get_user_model()
+        fields = ['email']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        if email == self.instance.email:
+            raise forms.ValidationError("Новый email не должен совпадать с текущим.")
+
+        return email
 

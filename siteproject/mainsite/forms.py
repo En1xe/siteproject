@@ -22,10 +22,10 @@ class DownloadForm(forms.ModelForm):
             'access': 'Доступ'
         }
         widgets = {
-            'file': forms.FileInput(),
+            'file': CustomVideoFileInput(attrs={'class': 'custom-file-input'}),
             'title': forms.TextInput(attrs={'class': 'video-input', 'placeholder': 'Название видео'}),
             'description': forms.Textarea(attrs={'class': 'video-input-area', 'placeholder': 'Расскажите, о чем ваше видео'}),
-            'picture': forms.FileInput(),
+            'picture': CustomImageFileInput(attrs={'class': 'custom-file-input'}),
             'access': forms.Select(attrs={'class': 'custom-access-select'})
         }
 
@@ -68,7 +68,7 @@ class PostForm(forms.ModelForm):
         }
         widgets = {
             'text': forms.Textarea(attrs={'class': 'post-input-area', 'placeholder': 'Расскажите, о чем ваш пост'}),
-            'image': forms.FileInput()
+            'image': CustomImageFileInput(attrs={'class': 'custom-file-input'})
         }
 
 

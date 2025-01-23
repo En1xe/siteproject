@@ -1,21 +1,18 @@
+{% load profile_tags %}
+
 {% if widget.is_initial %}
 <div class="custom-clearable-file-input">
     <div class="current-file-preview">
-        <img src="{{ widget.value.url }}" alt="Текущее изображение" style="max-width: 100px; max-height: 100px;">
+        <img src="{{ widget.value.url }}" alt="Текущее изображение" class="current-file-img">
     </div>
 
     <div class="custom-clearable-file-field">
-        {% if widget.name == "banner" and not is_default_banner %}
-            <button type="button" id="toggle-banner-clear" class="toggle-button" onclick="toggleClear('banner')">Удалить</button>
-            <input type="hidden" name="banner_clear" id="banner_clear" value="false">
-        {% elif widget.name == "user_icon" and not is_default_user_icon %}
-            <button type="button" id="toggle-user_icon-clear" class="toggle-button" onclick="toggleClear('user_icon')">Удалить</button>
-            <input type="hidden" name="user_icon_clear" id="user_icon_clear" value="false">
-        {% endif %}
+        <button type="button" id="toggle-{{ widget.name }}-clear" class="toggle-button" onclick="toggleClear('{{ widget.name }}')">Удалить</button>
+        <input type="hidden" name="{{ widget.name }}_clear" id="{{ widget.name }}_clear" value="false">
         <div>
             <button type="button" class="custom-file-button" onclick="document.getElementById('{{ widget.name }}-file-upload').click();">Изменить</button>
             <input type="file" id="{{ widget.name }}-file-upload" name="{{ widget.name }}" class="custom-file-input" onchange="updateFileName('{{ widget.name }}')" accept="image/*">
-            <span id="{{ widget.name }}-file-name" class="file-name">Нет выбранного файла</span>
+            <span id="{{ widget.name }}-file-name" class="file-name">{{ widget.value|basename }}</span>
         </div>
     </div>
 </div>
@@ -23,8 +20,26 @@
 
 
 <script>
+if ('{{ widget.name }}' === 'banner') {
+    const deleteBtn = document.getElementById("toggle-{{ widget.name }}-clear")
+    const fileName = document.getElementById("{{ widget.name }}-file-name")
+
+    if ('{{ is_default_banner }}' === 'True') {
+        deleteBtn.disabled = true;
+        fileName.innerText = 'Нет выбранного файла'
+    }
+} else {
+    const deleteBtn = document.getElementById("toggle-{{ widget.name }}-clear")
+    const fileName = document.getElementById("{{ widget.name }}-file-name")
+
+    if ('{{ is_default_user_icon }}' === 'True') {
+        deleteBtn.disabled = true;
+        fileName.innerText = 'Нет выбранного файла'
+    }
+};
+
+
 function toggleClear(imageType) {
-    console.log("toggleClear вызван для: " + imageType);
     const checkbox = document.getElementById(imageType + "_clear");
     const button = document.getElementById("toggle-" + imageType + "-clear");
 
@@ -36,9 +51,6 @@ function toggleClear(imageType) {
             checkbox.value = "false";  // Установить значение в false
             button.textContent = "Удалить";
         }
-        console.log(imageType + "_clear значение: " + checkbox.value); // Логирование значения
-    } else {
-        console.error("Не найден элемент для очистки: " + imageType);
     }
 }
 
@@ -52,11 +64,9 @@ function updateFileName(imageType) {
         const fileName = input.files[0].name; // Получаем название файла
         fileNameSpan.innerText = fileName; // Обновляем текст в span
         fileNameSpan.style.display = 'inline-block'; // Показываем span
-        console.log("Выбран файл: " + fileName); // Отладочное сообщение
     } else {
         fileNameSpan.innerText = 'Нет выбранного файла'; // Отображаем сообщение, если файл не выбран
         fileNameSpan.style.display = 'none'; // Скрываем span
-        console.log("Файл не выбран"); // Отладочное сообщение
     }
 }
 </script>

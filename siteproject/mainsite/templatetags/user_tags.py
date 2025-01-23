@@ -2,7 +2,6 @@ import re
 from datetime import datetime, timezone
 from django import template
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ViewDoesNotExist
 
 from mainsite.models import VideoPlayListModel, PostsVoteModel, CommentsVoteModel, VoteModel, SubscribeModel, \
     UserViewModel, CommentModel, ACCESS_TYPE

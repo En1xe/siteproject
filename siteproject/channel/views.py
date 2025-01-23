@@ -14,14 +14,16 @@ from mainsite.models import SubscribeModel, VideoModel, PlayListModel, PostsVote
 class ChannelView(DetailView):
     template_name = 'channel/channel.html'
     model = get_user_model()
+    context_object_name = 'author'  # Так автор будет доступен в шаблоне как {{ author }}
 
     def get_object(self, queryset=None):
-        alias = self.kwargs.get('alias')
+        # Переопределяем метод для поиска объекта по alias
+        alias = self.kwargs.get('alias')  # Извлекаем alias из URL
         return get_object_or_404(get_user_model(), alias=alias)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        author = self.get_object()
+        author = self.object  # Автор берется из get_object()
 
         if self.request.user.is_authenticated:
             context['is_subscribed'] = SubscribeModel.objects.filter(
@@ -32,14 +34,6 @@ class ChannelView(DetailView):
         context['author'] = author
         context['subscribers'] = SubscribeModel.objects.filter(author=author).count()
         return context
-
-    def post(self, request, *args, **kwargs):
-        action_type = request.POST.get('action_type')
-
-        if action_type in ['subscribe', 'unsubscribe']:
-            return handle_subscription_action(request)
-
-        return JsonResponse({'error': 'Invalid action'}, status=400)
 
 
 class ChannelVideoView(ChannelView):

@@ -6,19 +6,47 @@
 
 {% block content %}
     {% include 'users/sidebar.html' %}
+<div class="profile-space">
     <div class="profile-container">
         <span class='profile-title'>Оформление</span>
-        <form method="post" enctype="multipart/form-data" style="width: 312px;">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div>{{ form.non_field_errors }}</div>
-            {% for f in form %}
-                <div class="profile-form-item">
-                    <p><label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
-                    <div>{{ f.errors }}</div>
-                </div>
-            {% endfor %}
-
-            <button type="submit" class="profile-apply-btn">Применить изменения</button>
+            <div class="profile-form-container">
+                {% for f in form %}
+                    <div class="profile-form-item">
+                        <label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                        {{ f }}
+                        <div>{{ f.errors }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="profile-container">
+                <button type="submit" class="profile-apply-btn">Применить изменения</button>
+            </div>
         </form>
     </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const aliasInput = document.getElementById("id_alias");
+
+    // Запрещаем удаление символа @ в начале строки
+    aliasInput.addEventListener("keydown", function(event) {
+        // Если пытаются удалить Backspace или Delete на первом символе
+        if ((event.key === "Backspace" || event.key === "Delete") && aliasInput.selectionStart === 1) {
+            // Запрещаем удаление символа @ в начале строки
+            event.preventDefault();
+        }
+    });
+
+    // Гарантируем, что всегда будет символ @ в начале строки
+    aliasInput.addEventListener("input", function() {
+        if (!aliasInput.value.startsWith('@')) {
+            aliasInput.value = '@' + aliasInput.value;
+        }
+    });
+});
+</script>
 {% endblock %}

@@ -1,21 +1,20 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
-</head>
-<body>
-<div class="download-video-space">
-    <p class="download-video-title">KazTube</p>
-    <div class="download-video-container">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <p><button type="submit" class="download-video-btn">Подтвердить</button></p>
-        </form>
+{% block aside %}
+{% include 'aside_1.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="container" class="container">
+    <div class="create-post-space">
+        <p class="create-post-title">Загрузить видео</p>
+        <div class="create-post-container">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="create-post-btn">Опубликовать</button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -37,6 +36,4 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
-
-</body>
-</html>
+{% endblock %}

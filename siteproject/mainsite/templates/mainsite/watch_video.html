@@ -33,7 +33,6 @@
                 {% include 'votes_content.html' with type='video' user_vote_type=user_vote_type content=video %}
 
                 {% include 'add_playlist.html' with playlist_form=playlist_form playlists=playlists video_playlists=video_playlists %}
-
             </div>
         </div>
 
@@ -55,8 +54,8 @@
                 </div>
             </div>
             <div class="channel-info-btns">
-                <button><i class="fa-solid fa-circle-play"></i> Видео</button>
-                <button><i class="fa-regular fa-address-card"></i> О канале</button>
+                <a href="{% url 'channel_videos' video.user.alias %}"><i class="fa-solid fa-circle-play"></i> Видео</a>
+                <a><i class="fa-regular fa-address-card"></i> О канале</a>
             </div>
             <button class="toggle-button" onclick="toggleDescription()">Развернуть</button>
         </div>
@@ -95,6 +94,11 @@
                 </div>
             </div>
         {% endif %}
+        <div class="side-watch-videos">
+            {% for side_video in side_videos %}
+                {% include 'small_horizontal_video_container.html' with video=side_video %}
+            {% endfor %}
+        </div>
     </div>
 </div>
 

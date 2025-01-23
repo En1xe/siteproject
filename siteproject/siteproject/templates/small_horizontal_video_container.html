@@ -1,0 +1,21 @@
+{% load user_tags %}
+
+<div class="video-wrapper3">
+  <a href="{% url 'detail_video' uuid=video.id %}" style="text-decoration: none;">
+      <img class='small_video-container' src="{{ video.picture.url }}">
+      <div class="small_video-overlay">
+          <span class="small_overlay-text">Смотреть видео</span>
+      </div>
+      <div class="duration2">{{ video.duration|get_video_duration }}</div>
+      <div style="margin: 0 5px;">
+          <span class="small_video-wrapper-title2">{{ video.title|truncatechars:20 }}</span>
+          <div>
+              <a href="{% url 'channel' video.user.alias %}" style="text-decoration: none;">
+                <span class="author-name" title="{{ video.user.username}}">{{ video.user.username }}</span>
+              </a>
+          </div>
+          <span class="video-wrapper-views">{{ video|get_rel_views }}</span>
+          <span class="video-creation-date">• {{ video.creation_date|get_date }}</span>
+      </div>
+  </a>
+</div>
