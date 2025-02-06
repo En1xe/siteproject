@@ -32,7 +32,7 @@
                 <span>• 0 видео</span><br>
                 <button id="toggleChannelDesc" class="channel_desc">Описание канала</button>
 
-                {% include 'subs_btn.html' with author=user %}
+                {% include 'subs_btn.html' with author=author %}
 
                 <div id="channelModal" class="channelModal">
                     <div class="channelModal-content">
@@ -59,7 +59,7 @@
     {% elif channel_content_type == 'posts' %}
         {% include 'channel/channel_posts.html' with posts=posts %}
     {% elif channel_content_type == 'subscription' %}
-        {% include 'channel/channel_subscription.html' %}
+        {% include 'channel/channel_subscription.html' with author=author %}
     {% endif %}
     </div>
 </div>

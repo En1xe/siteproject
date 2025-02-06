@@ -30,6 +30,21 @@
             <input value="{{ user.email }}" class="profile-input" readonly>
             <button type="button" class="profile-apply-btn" onclick="sendSecurityCode('change_email')">Изменить почту</button>
         </div>
+        <div class="profile-element">
+            <button class="profile-apply-btn delete-account-btn">Удалить аккаунт</button>
+            <div class="delete-account-modal">
+                <div class="delete-account-modal-content">
+                    <p>Вы уверены, что хотите удалить аккаунт?</p>
+                    <form class="delete-account-form" method="post" action="{% url 'users:profile_data' %}">
+                        {% csrf_token %}
+                        <input class="user_alias" type="hidden" name="user_alias" value="{{ user.alias }}">
+                        <input type="hidden" name="action_type" value="delete-account">
+                        <button type="button" class="cancel-delete">Отмена</button>
+                        <button type="submit" class="confirm-delete">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -53,6 +68,67 @@ function sendSecurityCode(action) {
     .catch(error => {
         console.error("Ошибка при отправке кода:", error);
     });
+}
+
+
+document.querySelectorAll('.delete-account-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.nextElementSibling; // Модальное окно следующее за кнопкой
+        const accountId = modal.querySelector('.user_alias').value; // Получаем ID комментария
+        const form = modal.querySelector('.delete-account-form'); // Находим форму
+
+        openDeleteModal(modal);
+    });
+});
+
+function openDeleteModal(modal) {
+    modal.style.display = 'flex';
+}
+
+// Функция для закрытия модального окна
+function closeDeleteModal(modal) {
+    modal.style.display = 'none';
+}
+
+// Открытие модального окна при клике на кнопку удаления
+document.querySelectorAll('.delete-account-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.nextElementSibling; // Модальное окно следующее за кнопкой
+        openDeleteModal(modal);
+    });
+});
+
+// Закрытие модального окна при клике на "Отмена"
+document.querySelectorAll('.cancel-delete').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.closest('.delete-account-modal'); // Находим ближайшее модальное окно
+        closeDeleteModal(modal);
+    });
+});
+
+// Закрытие модального окна при клике вне области модального окна
+document.querySelectorAll('.delete-account-modal').forEach(modal => {
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) { // Проверяем, что клик был вне области модального окна
+            closeDeleteModal(modal);
+        }
+    });
+});
+
+// Функция для получения CSRF-токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 </script>
 {% endblock %}

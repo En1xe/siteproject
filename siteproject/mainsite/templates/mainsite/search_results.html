@@ -27,8 +27,8 @@
             <div class="filter-group">
                 <label for="type_filter">Тип</label>
                 <select id="type_filter" name="type_filter" class="custom-access-select">
-                    <option value="all" {% if type_filter == 'all' %}selected{% endif %}>Все</option>
-                    <option value="video" {% if type_filter == 'video' %}selected{% endif %}>Видео</option>
+                    <option value="all" id="type_filter_all" {% if type_filter == 'all' %}selected{% endif %}>Все</option>
+                    <option value="video" id="type_filter_video" {% if type_filter == 'video' %}selected{% endif %}>Видео</option>
                     <option value="user" {% if type_filter == 'user' %}selected{% endif %}>Канал</option>
                     <option value="playlist" {% if type_filter == 'playlist' %}selected{% endif %}>Плейлист</option>
                 </select>
@@ -64,7 +64,7 @@
             {% include 'mainsite/search_results_part.html' %}
         </div>
     {% else %}
-    <p style="color: white; margin: 30px;">Ничего не было найдено по вашему запросу</p>
+    <p style="color: black; margin: 30px;">Ничего не было найдено по вашему запросу</p>
     {% endif %}
 </div>
 
@@ -84,6 +84,12 @@ document.getElementById("search-filters-form").addEventListener("submit", functi
 
     // Строим URL с параметрами
     const url = `/search/?${params.toString()}`;
+
+    const typeFilterAll = document.getElementById('type_filter_all');
+    const typeFilterVideo = document.getElementById('type_filter_video');
+    const durationFilter = document.getElementById('duration_filter');
+
+    durationFilter.disabled = !typeFilterAll.selected & !typeFilterVideo.selected ? true : false
 
     // Отправляем запрос с методом GET
     fetch(url, {

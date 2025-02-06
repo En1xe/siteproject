@@ -2,8 +2,8 @@ from django.urls import path, register_converter
 
 from .converter import AliasConverter
 from .views import HomePage, DownloadView, SearchResultsView, DetailVideoView, HomePlaylistView, CreatePostView, \
-    DetailPostsView, BaseFeedbackView, SubscriptionsContent, HistoryView, DeleteHistoryView, LikedVideosView, \
-    DeleteLikeView, search_history, delete_query
+    DetailPostsView, SubscriptionsContent, HistoryView, DeleteHistoryView, LikedVideosView, \
+    DeleteLikeView, search_history, delete_query, delete_comment
 
 register_converter(AliasConverter, 'alias')
 
@@ -15,7 +15,6 @@ urlpatterns = [
     path('playlists', HomePlaylistView.as_view(), name='home_playlists'),
     path('community', CreatePostView.as_view(), name='create_post'),
     path('community/<uuid:uuid>', DetailPostsView.as_view(), name='detail_post'),
-    path('submit-feedback/', BaseFeedbackView.as_view(), name='submit_feedback'),
     path('subscriptions', SubscriptionsContent.as_view(), name='subscriptions'),
     path('history', HistoryView.as_view(), name='history'),
     path('delete-history/<int:visit_id>/', DeleteHistoryView.as_view(), name='delete_history'),

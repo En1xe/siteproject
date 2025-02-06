@@ -14,11 +14,11 @@
                 <a href="{% url 'channel' post.author.alias %}"><img src="{{ post.author.user_icon.url }}" class="post-author-img"></a>
             </div>
             <div class="detail-post-field">
-                <a href="{% url 'channel' post.author.alias %}" style="text-decoration: none; color: white; margin-right: 5px;">
+                <a href="{% url 'channel' post.author.alias %}" style="text-decoration: none; color: black; margin-right: 5px;">
                     <span>{{ post.author.username }}</span>
                 </a>
-                <span style="font-size: 13px;">{{ post.creation_date|get_date }}</span>
-                <p>{{ post.text }}</p>
+                <span style="font-size: 13px; color: black;">{{ post.creation_date|get_date }}</span>
+                <p style="color: black;">{{ post.text }}</p>
                 {% if post.image %}
                 <img src="{{ post.image.url }}" class="detail-post-image">
                 {% endif %}

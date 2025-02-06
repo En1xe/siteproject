@@ -1,7 +1,7 @@
 <div id="playlistModal" class="playlistModal">
     <div class="playlistModal-content">
         <button class="playlist-close-btn"><i class="fa-solid fa-x"></i></button>
-        <span style="color: white; font-weight: normal; font-size: 18px;">Выберите плейлист</span>
+        <span style="color: black; font-weight: normal; font-size: 18px;">Выберите плейлист</span>
         <div style="display: flex; align-items: center; flex-direction: column; margin-top: 25px;">
             <form method="post" id="playlist-form" style="display: flex; align-items: center; flex-direction: column;">
                 {% csrf_token %}
@@ -11,7 +11,7 @@
                     <div class="playlist-form-item">
                         <input type="checkbox" name="playlists" value="{{ playlist.id }}" id="playlist-{{ playlist.id }}"
                         {% if playlist.id in video_playlists %} checked {% endif %}>
-                        <label for="playlist-{{ playlist.id }}" style="color: white; margin-left: 15px; font-weight: normal">
+                        <label for="playlist-{{ playlist.id }}" style="color: black; margin-left: 15px; font-weight: normal">
                             {{ playlist.title|truncatechars:14 }}
                         </label>
                     </div>
@@ -31,8 +31,11 @@
             {% csrf_token %}
             <div>{{ playlist_form.non_field_errors }}</div>
               {% for f in playlist_form %}
-              <p><label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
-              <div>{{ f.errors }}</div>
+                <div class="CreationPlaylistModal-field">
+                    <label class="profile-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                    {{ f }}
+                    <div>{{ f.errors }}</div>
+                </div>
               {% endfor %}
             <button type="button" class="cancel-btn" >Отмена</button>
             <button type="submit" class="playlist-add-btn">Создать</button>

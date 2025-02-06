@@ -20,7 +20,6 @@ VOTE_CHOICES = (
 
 ACCESS_TYPE = (
     ('public', 'Публичный'),
-    ('by_url', 'По ссылке'),
     ('limited', 'Ограниченный')
 )
 

@@ -5,6 +5,7 @@ from django.contrib.auth import logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
@@ -51,6 +52,18 @@ class ProfileData(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    def post(self, request, *args, **kwargs):
+        action_type = request.POST.get('action_type', '')
+        user_alias = request.POST.get('user_alias', '')
+
+        if action_type == 'delete-account':
+            if user_alias == self.request.user.alias:
+                user = self.request.user
+                user.delete()
+                logout(request)
+                return redirect('/')
+            return JsonResponse({'message': 'Недостаточно прав для удаления аккаунта'}, status=403)
+        return super().post(request, *args, **kwargs)
 
 
 class ProfileDesign(LoginRequiredMixin, UpdateView):

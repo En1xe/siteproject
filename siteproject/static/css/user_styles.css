@@ -4,7 +4,7 @@ body {
     font-weight: 500;
     margin: 0;
     padding: 0;
-    background-color: #1F1F1F;
+    background-color: rgb(245, 245, 245);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,7 +14,7 @@ body {
 .login-container {
     width: 500px;
     padding: 30px;
-    background-color: #242424;
+    background-color: rgb(190, 190, 190);
     border-radius: 20px;
     color: white;
 }
@@ -22,16 +22,17 @@ body {
 .title {
     font-size: 80px;
     font-weight: 300;
-    color: white;
+    color: black;
 }
 
 .login-label {
     font-size: 20px;
+    color: black;
 }
 
 .login-input {
-    background: none;
-    color: white;
+    background: rgb(170, 170, 170);
+    color: black;
     border: 0;
     border: 1px solid grey;
     border-radius: 10px;
@@ -43,6 +44,7 @@ body {
     margin-top: 10px;
     margin-bottom: 30px;
     width: 300px;
+    outline: none;
 }
 
 ::placeholder {
@@ -50,16 +52,16 @@ body {
 }
 
 .login-input:hover {
-    border-color: #AAAAAA;
+    border-color: rgb(100, 100, 100);
 }
 
 .login-input:focus {
-    border-color: #FFF;
+    border-color: rgb(70, 70, 70);
 }
 
 .login-apply-btn {
-    background-color: #3E3E3E;
-    color: white;
+    background-color: rgb(140, 140, 140);
+    color: black;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;

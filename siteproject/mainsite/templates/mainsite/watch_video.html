@@ -21,9 +21,9 @@
                 <a href="{% url 'channel' video.user.alias %}"><img class="watch-author-img" src="{{ video.user.user_icon.url }}"></a>
                 <div style="margin-left: 8px;">
                     <a href="{% url 'channel' video.user.alias %}" style="text-decoration: none;">
-                    <p style="margin: 0; color: white; font-size: 18px;">{{ video.user.username }}</p>
+                    <p style="margin: 0; color: black; font-size: 18px;">{{ video.user.username }}</p>
                     </a>
-                    <p style="margin: 0; color: #969696; font-weight: normal;">{{ video.user|get_subs }}</p>
+                    <p style="margin: 0; color: rgb(50, 50, 50); font-weight: normal;">{{ video.user|get_subs }}</p>
                 </div>
 
                 {% include 'subs_btn.html' with author=author %}
@@ -48,14 +48,13 @@
                 <a><img class="watch-author-img" src="{{ video.user.user_icon.url }}"></a>
                 <div style="margin-left: 8px;">
                     <a href="{% url 'channel' video.user.alias %}" style="text-decoration: none;">
-                    <p style="margin: 0; color: white; font-size: 18px;">{{ video.user.username }}</p>
+                    <p style="margin: 0; color: black; font-size: 18px;">{{ video.user.username }}</p>
                     </a>
-                    <p style="margin: 0; color: #969696; font-weight: normal;">{{ video.user|get_subs }}</p>
+                    <p style="margin: 0; color: rgb(40, 40, 40); font-weight: normal;">{{ video.user|get_subs }}</p>
                 </div>
             </div>
             <div class="channel-info-btns">
                 <a href="{% url 'channel_videos' video.user.alias %}"><i class="fa-solid fa-circle-play"></i> Видео</a>
-                <a><i class="fa-regular fa-address-card"></i> О канале</a>
             </div>
             <button class="toggle-button" onclick="toggleDescription()">Развернуть</button>
         </div>

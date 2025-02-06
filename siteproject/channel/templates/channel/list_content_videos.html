@@ -30,15 +30,12 @@
 </div>
 <div class="content-container">
     <p class="content-title">Контент на канале</p>
-    <div class="content-filter-container">
-        <i class="fa-solid fa-filter"></i>
-        <span class="content-filter">Фильтры</span>
-    </div>
     <div class="content-table">
         <table>
             <thead>
                 <tr>
                     <th>Видео</th>
+                    <th>Действие</th>
                     <th>Название</th>
                     <th>Описание</th>
                     <th>Доступ</th>
@@ -59,8 +56,25 @@
                             </div>
                         </a>
                     </td>
+                    <td>
+                        <button class="delete-content-btn">Удалить видео</button>
+                        <div class="delete-content-modal">
+                            <div class="delete-content-modal-content">
+                                <p>Удалить видео?</p>
+                                <form class="delete-content-form" method="post" action="">
+                                    {% csrf_token %}
+                                    <input class="content_id" type="hidden" name="content_id" value="{{ video.id }}">
+                                    <button type="button" class="cancel-delete">Отмена</button>
+                                    <button type="submit" class="confirm-delete">Подтвердить</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="delete-content-notification" style="display: none;">
+                            <span>Видео удалено</span>
+                        </div>
+                    </td>
                     <td>{{ video.title }}</td>
-                    <td>{{ video.description }}</td>
+                    <td>{{ video.description|truncatechars:100 }}</td>
                     <td>{{ video.access|get_access_name }}</td>
                     <td>{{ video.creation_date|get_date_name }}</td>
                     <td>{% get_views video %}</td>
@@ -99,4 +113,99 @@
     </div>
 </div>
 
+<script>
+document.querySelectorAll('.delete-content-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.nextElementSibling; // Модальное окно следующее за кнопкой
+        const commentId = modal.querySelector('.content_id').value; // Получаем ID комментария
+        const form = modal.querySelector('.delete-content-form'); // Находим форму
+
+        openDeleteModal(modal);
+    });
+});
+
+function openDeleteModal(modal) {
+    modal.style.display = 'flex';
+}
+
+// Функция для закрытия модального окна
+function closeDeleteModal(modal) {
+    modal.style.display = 'none';
+}
+
+// Открытие модального окна при клике на кнопку удаления
+document.querySelectorAll('.delete-content-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.nextElementSibling; // Модальное окно следующее за кнопкой
+        openDeleteModal(modal);
+    });
+});
+
+// Закрытие модального окна при клике на "Отмена"
+document.querySelectorAll('.cancel-delete').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.closest('.delete-content-modal'); // Находим ближайшее модальное окно
+        closeDeleteModal(modal);
+    });
+});
+
+// Закрытие модального окна при клике вне области модального окна
+document.querySelectorAll('.delete-content-modal').forEach(modal => {
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) { // Проверяем, что клик был вне области модального окна
+            closeDeleteModal(modal);
+        }
+    });
+});
+
+document.querySelectorAll('.delete-content-form').forEach(form => {
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Отменяем стандартную отправку формы
+
+        const formData = new FormData(this); // Собираем данные формы
+        const commentId = formData.get('content_id'); // Получаем ID комментария
+        formData.append('action_type', 'delete-content')
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'), // Для защиты от CSRF
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const modal = this.closest('.delete-content-modal'); // Находим модальное окно
+                const deleteNotification = document.querySelector('.delete-content-notification');
+                closeDeleteModal(modal);
+                deleteNotification.style.display = 'block'
+
+                setTimeout(() => {
+                    deleteNotification.style.display = "none";
+                }, 3000); // 3000 миллисекунд = 3 секунды
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+    });
+});
+
+// Функция для получения CSRF-токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock %}

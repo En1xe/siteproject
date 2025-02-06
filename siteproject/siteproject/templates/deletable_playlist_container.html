@@ -1,0 +1,44 @@
+{% load user_tags %}
+{% load static %}
+
+<div class="home-pl-item">
+    {% get_last_video pl as last_video %}
+    {% if last_video %}
+        <a href="{% url 'detail_video' last_video.id %}?list={{ pl.id }}">
+            <img src="{{ last_video.picture.url }}" class="video-container">
+        {% else %}
+        <a href="">
+            <img src="{% static 'images/default_playlist_image.png' %}" class="video-container">
+        {% endif %}
+        <div class="playlist-video-overlay">
+            <span class="overlay-text"><i class="fa-solid fa-play"></i> Воспроизвести все</span>
+        </div>
+        <div class="num-of-videos">{{ pl|count_videos }} видео</div>
+        </a>
+        </a>
+    <div class='home-pl-text'>
+        <p class="playlist-title">{{ pl.title|truncatechars:40 }}</p>
+        <span>{{ pl.author.username }}</span>
+        <span>• Плейлист</span><br>
+        <span>{{ pl.access|get_access_name }}</span>
+    </div>
+    <div>
+        <button class="delete-playlist-btn">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <div class="delete-playlist-modal">
+            <div class="delete-playlist-modal-content">
+                <p>Удалить видео?</p>
+                <form class="delete-playlist-form" method="post" action="">
+                    {% csrf_token %}
+                    <input class="playlist_id" type="hidden" name="playlist_id" value="{{ pl.id }}">
+                    <button type="button" class="cancel-delete">Отмена</button>
+                    <button type="submit" class="confirm-delete">Подтвердить</button>
+                </form>
+            </div>
+        </div>
+        <div class="delete-playlist-notification" style="display: none;">
+            <span>Плейлист удален</span>
+        </div>
+    </div>
+</div>

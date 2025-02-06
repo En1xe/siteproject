@@ -1,13 +1,14 @@
 <style>
 aside {
     width: 240px;
-    background-color: #1E1E1E;
+    background-color: white;
     height: 100vh;
     position: fixed;
     top: 0;
     left: -240px;
     z-index: 102;
     transition: left 0.2s ease;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
 
 .aside-item {
@@ -18,7 +19,7 @@ aside {
 }
 
 .aside-a {
-    color: white;
+    color: black;
     text-decoration: none;
     font-weight: 300;
     font-size: 18px;
@@ -40,15 +41,15 @@ aside {
 }
 
 .aside-item:hover, .author-item:hover, .toggle-list-button:hover {
-    background: #242424;
+    background: rgb(230, 230, 230);
 }
 
 .aside-item:active, .author-item:active, .toggle-list-button:active {
-    background: #303030;
+    background: rgb(210, 210, 210);
 }
 
 .aside-center p {
-    color: white;
+    color: black;
     font-weight: 500;
     font-size: 20px;
     margin-left: 25px;
@@ -59,7 +60,7 @@ aside {
     align-items: center;
     justify-content: flex-start;
     flex: 1;
-    color: white;
+    color: black;
     min-height: 25px;
     padding: 5px 25px;
 }
@@ -97,23 +98,24 @@ aside {
     width: 100%;
     background: none;
     border: none;
-    color: white;
+    color: black;
     font-size: inherit;
     cursor: pointer;
 }
 
 footer {
-    color: #DCDCDC;
+    color: rgb(70, 70, 70);
     font-size: 14px;
-    font-weight: 100;
+    font-weight: 500;
 }
 
 footer a {
-   color: white;
+   color: black;
 }
 
 .aside-text {
     margin-left: 25px;
+    font-weight: 500;
 }
 
 .overlay {

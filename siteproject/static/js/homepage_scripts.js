@@ -56,23 +56,9 @@ function toggleClearButton() {
     searchButton.style.display = inputField.value.length > 0 ? "inline-block" : "none";
 }
 
-
-const toggleFeedbackElements = document.querySelectorAll('.toggleFeedback');
-const closeFeedback = document.getElementById('closeFeedback');
-const FeedbackModal = document.getElementById('FeedbackModal');
-
-
-toggleFeedbackElements.forEach(element => {
-  element.onclick = function(event) {
-    event.preventDefault();
-    FeedbackModal.style.display = 'block';
-  };
+document.addEventListener('DOMContentLoaded', function() {
+    toggleClearButton();
 });
-
-
-closeFeedback.onclick = function() {
-  FeedbackModal.style.display = 'none';
-}
 
 
 

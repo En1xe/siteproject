@@ -1,11 +1,11 @@
 {% load user_tags %}
 
-{% list_of_subs user as list %}
+{% list_of_subs author as list %}
 <div style="display: flex; flex-direction: column; gap: 20px;">
   {% for item in list %}
       <a href="{% url 'channel' item.author.alias %}" style="text-decoration: none; display: flex; align-items: center;">
           <img src="{{ item.author.user_icon.url }}" width="200">
-          <span style="color: white; font-size: 25px;">{{ item.author.username }}</span>
+          <span style="color: black; font-size: 25px;">{{ item.author.username }}</span>
       </a>
     {% endfor %}
 </div>

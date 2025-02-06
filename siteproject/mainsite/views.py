@@ -4,10 +4,9 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ViewDoesNotExist
 from django.db.models import Q, Count, ExpressionWrapper, F, IntegerField, QuerySet
 from django.http import JsonResponse
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -168,47 +167,33 @@ def delete_query(request, request_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 
-class BaseFeedbackView(View):
-    form_class = FeedbackForm
-    template_name = 'mainsite/feedback.html'
 
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            feedback = form.save(commit=False)
-            feedback.user = request.user
-            feedback.save()
-            return JsonResponse({'success': True, 'message': 'Спасибо за ваш отзыв!'})
-        return JsonResponse({'success': False, 'errors': form.errors})
-
-
-class HomePage(ListView, BaseFeedbackView):
-    model = VideoModel
+class HomePage(ListView):
     template_name = 'mainsite/homepage.html'
     context_object_name = 'videos'
+    model = VideoModel
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['feedback_form'] = self.form_class()  # Создайте экземпляр формы и добавьте в контекст
+        context['playlists'] = PlayListModel.objects.filter(access='public')
         return context
 
 
-class SubscriptionsContent(LoginRequiredMixin, ListView, BaseFeedbackView):
+class SubscriptionsContent(LoginRequiredMixin, ListView):
     template_name = 'mainsite/subscribe_content.html'
     model = VideoModel
     context_object_name = 'videos'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = self.form_class()  # Создайте экземпляр формы и добавьте в контекст
         authors = SubscribeModel.objects.filter(subscriber=self.request.user).values_list('author', flat=True)
         context['subscribe_videos'] = VideoModel.objects.filter(user__in=authors).order_by('creation_date')
         return context
 
-class DetailPostsView(DetailView, BaseFeedbackView):
+class DetailPostsView(LoginRequiredMixin, DetailView):
     template_name = 'mainsite/detail_post.html'
     model = PostsModel
     slug_field = 'id'
@@ -235,6 +220,12 @@ class DetailPostsView(DetailView, BaseFeedbackView):
         post_content_type = ContentType.objects.get_for_model(PostsModel)
         comment_form = CommentForm(request.POST)
         reply_form = CommentForm(request.POST)
+
+        if action_type == 'delete-comment':
+            comment_id = request.POST.get('comment_id')
+            comment = get_object_or_404(CommentModel, id=comment_id)
+            comment.delete()
+            return JsonResponse({'status': 'success'})
 
         if comment_form.is_valid() and not request.POST.get('parent_id'):
             comment = comment_form.save(commit=False)
@@ -264,7 +255,7 @@ class DetailPostsView(DetailView, BaseFeedbackView):
             return vote_on_comment(request, comment_id, vote_type)
 
 
-class HomePlaylistView(LoginRequiredMixin, ListView, BaseFeedbackView):
+class HomePlaylistView(LoginRequiredMixin, ListView):
     template_name = 'mainsite/home_playlists.html'
     model = PlayListModel
 
@@ -278,8 +269,17 @@ class HomePlaylistView(LoginRequiredMixin, ListView, BaseFeedbackView):
         context['playlists'] = PlayListModel.objects.filter(user=self.request.user)
         return context
 
+    def post(self, request, *args, **kwargs):
+        action_type = request.POST.get('action_type', '')
+        playlist_id = request.POST.get('playlist_id', '')
 
-class CreatePostView(LoginRequiredMixin, CreateView, BaseFeedbackView):
+        if action_type == 'delete-playlist':
+            video = get_object_or_404(PlayListModel, id=playlist_id)
+            video.delete()
+            return JsonResponse({'status': 'success'})
+
+
+class CreatePostView(LoginRequiredMixin, CreateView):
     template_name = 'mainsite/create_post.html'
     model = PostsModel
     form_class = PostForm
@@ -323,7 +323,7 @@ class DownloadView(LoginRequiredMixin, CreateView):
         return response
 
 
-class DetailVideoView(DetailView, BaseFeedbackView):
+class DetailVideoView(LoginRequiredMixin, DetailView):
     template_name = 'mainsite/watch_video.html'
     context_object_name = 'video'
     model = VideoModel
@@ -388,6 +388,12 @@ class DetailVideoView(DetailView, BaseFeedbackView):
         playlist_form = PlaylistForm(request.POST)
         playlists = request.POST.getlist('playlists')
         content_type = ContentType.objects.get_for_model(VideoModel)
+
+        if action_type == 'delete-comment':
+            comment_id = request.POST.get('comment_id')
+            comment = get_object_or_404(CommentModel, id=comment_id)
+            comment.delete()
+            return JsonResponse({'status': 'success'})
 
         if playlist_form.is_valid():
             playlist = playlist_form.save(commit=False)
@@ -478,7 +484,7 @@ class DetailVideoView(DetailView, BaseFeedbackView):
         return JsonResponse({'status': 'not viewed'}, status=400)
 
 
-class HistoryView(LoginRequiredMixin, ListView, BaseFeedbackView):
+class HistoryView(LoginRequiredMixin, ListView):
     template_name = 'mainsite/history.html'
     model = PageVisit
 
@@ -498,7 +504,7 @@ class DeleteHistoryView(View):
         return JsonResponse({'success': False}, status=400)
 
 
-class LikedVideosView(LoginRequiredMixin, ListView, BaseFeedbackView):
+class LikedVideosView(LoginRequiredMixin, ListView):
     template_name = 'mainsite/liked_content.html'
     model = VoteModel
 
@@ -518,4 +524,13 @@ class DeleteLikeView(View):
 
     def get(self, request, *args, **kwargs):
         return JsonResponse({'success': False, 'error': 'Неверный метод запроса.'}, status=400)
+
+
+@csrf_exempt
+def delete_comment(request, comment_id):
+    if request.method == 'POST':
+        comment = get_object_or_404(CommentModel, id=comment_id)
+        comment.delete()
+        return JsonResponse({'status': 'success', 'message': 'Комментарий удален'})
+    return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса'}, status=400)
 

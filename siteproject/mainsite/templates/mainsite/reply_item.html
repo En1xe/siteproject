@@ -3,11 +3,11 @@
 <div class="reply-item" style="display: flex; gap: 10px; margin-bottom: 15px;">
     <a href="{% url 'channel' reply.user.alias %}"><img class="watch-author-img" src="{{ user.user_icon.url }}"></a>
     <div class="comment-item-field">
-        <a href="{% url 'channel' reply.user.alias %}" style="color: white; font-size: 15px; text-decoration: none;">
+        <a href="{% url 'channel' reply.user.alias %}" style="color: black; font-size: 15px; text-decoration: none;">
             {{ reply.user.username }}
         </a>
         <span class="comment-date">{{ reply.creation_date|get_date }}</span>
-        <p style="color: white; font-weight: normal; font-size: 15px;">
+        <p style="color: black; font-weight: normal; font-size: 15px;">
             {{ reply.text|mention_to_link:alias_dict|safe }}
         </p>
 

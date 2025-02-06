@@ -5,11 +5,30 @@
       <a href="{% url 'channel' comment.user.alias %}"><img class="watch-author-img" src="{{ user.user_icon.url }}"></a>
     </div>
     <div class="comment-item-field">
-      <a href="{% url 'channel' comment.user.alias %}" style="color: white; font-size: 15px; text-decoration: none;">
+      <a href="{% url 'channel' comment.user.alias %}" style="color: black; font-size: 15px; text-decoration: none;">
         {{ comment.user.username }}
       </a>
       <span class="comment-date">{{ comment.creation_date|get_date }}</span>
-      <p style="color: white; font-weight: normal; font-size: 15px;">{{ comment.text }}</p>
+        {% if user.alias == comment.user.alias %}
+        <button class="delete-comment-btn">
+            <i class="fa-solid fa-trash-can"></i>
+        </button>
+        <div class="delete-comment-modal">
+            <div class="delete-comment-modal-content">
+                <p>Удалить комментарий?</p>
+                <form class="delete-comment-form" method="post" action="">
+                    {% csrf_token %}
+                    <input class="comment_id" type="hidden" name="comment_id" value="{{ comment.id }}">
+                    <button type="button" class="cancel-delete">Отмена</button>
+                    <button type="submit" class="confirm-delete">Подтвердить</button>
+                </form>
+            </div>
+        </div>
+        <div class="delete-comment-notification" style="display: none;">
+            <span>Комментарий удален</span>
+        </div>
+        {% endif %}
+      <p style="color: black; font-weight: normal; font-size: 15px;">{{ comment.text }}</p>
 
       <div class="comment-votes">
 
@@ -133,5 +152,100 @@ function toggleReply(commentId, userName = null) {
     } else {
         replyForm.style.display = 'none';
     }
+}
+
+
+document.querySelectorAll('.delete-comment-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.nextElementSibling; // Модальное окно следующее за кнопкой
+        const commentId = modal.querySelector('.comment_id').value; // Получаем ID комментария
+        const form = modal.querySelector('.delete-comment-form'); // Находим форму
+
+        openDeleteModal(modal);
+    });
+});
+
+function openDeleteModal(modal) {
+    modal.style.display = 'flex';
+}
+
+// Функция для закрытия модального окна
+function closeDeleteModal(modal) {
+    modal.style.display = 'none';
+}
+
+// Открытие модального окна при клике на кнопку удаления
+document.querySelectorAll('.delete-comment-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.nextElementSibling; // Модальное окно следующее за кнопкой
+        openDeleteModal(modal);
+    });
+});
+
+// Закрытие модального окна при клике на "Отмена"
+document.querySelectorAll('.cancel-delete').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.closest('.delete-comment-modal'); // Находим ближайшее модальное окно
+        closeDeleteModal(modal);
+    });
+});
+
+// Закрытие модального окна при клике вне области модального окна
+document.querySelectorAll('.delete-comment-modal').forEach(modal => {
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) { // Проверяем, что клик был вне области модального окна
+            closeDeleteModal(modal);
+        }
+    });
+});
+
+document.querySelectorAll('.delete-comment-form').forEach(form => {
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Отменяем стандартную отправку формы
+
+        const formData = new FormData(this); // Собираем данные формы
+        const commentId = formData.get('comment_id'); // Получаем ID комментария
+        formData.append('action_type', 'delete-comment')
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'), // Для защиты от CSRF
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const modal = this.closest('.delete-comment-modal'); // Находим модальное окно
+                const deleteNotification = document.querySelector('.delete-comment-notification');
+                closeDeleteModal(modal);
+                deleteNotification.style.display = 'block'
+
+                setTimeout(() => {
+                    deleteNotification.style.display = "none";
+                }, 3000); // 3000 миллисекунд = 3 секунды
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+    });
+});
+
+// Функция для получения CSRF-токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 </script>

@@ -11,6 +11,9 @@
     {% for video in videos %}
         {% include 'video_container.html' with video=video %}
     {% endfor %}
+    {% for playlist in playlists %}
+        {% include 'playlist_container.html' with pl=playlist %}
+    {% endfor %}
     </div>
 </div>
 {% endblock %}

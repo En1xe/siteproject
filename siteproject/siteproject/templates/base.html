@@ -17,7 +17,7 @@
         <button class="menu-toggle" id="menu-toggle">
             <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
         </button>
-        <a href="{% url 'homepage' %}" class="site-logo">KazTube</a>
+        <a href="{% url 'homepage' %}" class="site-logo">ОЛИМП</a>
     </div>
     <div class="header-middle">
 
@@ -86,11 +86,6 @@
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         <span class="header-text">Выйти</span>
                     </a>
-                <hr>
-                    <a href="" class="toggleFeedback">
-                        <i class="fa-regular fa-message"></i>
-                        <span class="header-text">Отправить отзыв</span>
-                    </a>
                 </div>
             </div>
         {% else %}
@@ -109,17 +104,18 @@
 
 <script src="{% static 'js/homepage_scripts.js' %}"></script>
 <script>
+{% if user.is_authenticated %}
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');
     const searchHistory = document.getElementById('search-history');
-    let preventBlur = false;
+    const historyList = document.getElementById('history-list');
+    const searchButton = document.querySelector('.search-btn');
 
     if (searchInput) {
         searchInput.addEventListener('focus', function() {
             fetch("{% url 'search_history' %}")
                 .then(response => response.json())
                 .then(data => {
-                    const historyList = document.getElementById('history-list');
                     historyList.innerHTML = '';
                     if (data.history.length === 0) {
                         searchHistory.style.display = 'none'; // Скрыть блок, если нет истории
@@ -143,11 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             const deleteBtn = document.createElement('button');
                             deleteBtn.textContent = 'X';
                             deleteBtn.style.marginLeft = 'auto';
-
-                            // Обработка клика для предотвращения закрытия списка
-                            deleteBtn.addEventListener('mousedown', function(event) {
-                                preventBlur = true;
-                            });
+                            deleteBtn.style.color = 'black';
 
                             // Обработка удаления
                             deleteBtn.addEventListener('click', function(event) {
@@ -161,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             link.href = `/search/?query=${encodeURIComponent(item.query)}`;
                             link.style.textDecoration = 'none';
                             link.style.color = 'black';
+                            link.classList.add('history-link')
 
                             // Собираем элементы в div
                             div.appendChild(magnifyingGlass);
@@ -173,15 +166,40 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
         });
-
-        searchInput.addEventListener('blur', function() {
-            if (!preventBlur) {
-                searchHistory.style.display = 'none';
-            }
-            preventBlur = false;
-        });
     }
+
+    historyList.addEventListener('click', function(event) {
+        if (event.target.classList.contains('history-link')) {
+            // Переход по ссылке
+            window.location.href = event.target.href;
+        }
+    });
+
+    // Обработчик клика на поле поиска или кнопку поиска
+    searchInput.addEventListener('click', function(event) {
+        event.stopPropagation(); // Останавливаем всплытие события, чтобы оно не достигло document
+        searchHistory.style.display = 'block'; // Открываем searchHistory
+    });
+
+    searchButton.addEventListener('click', function(event) {
+        event.stopPropagation(); // Останавливаем всплытие события, чтобы оно не достигло document
+        searchHistory.style.display = 'block'; // Открываем searchHistory
+    });
+
+    // Обработчик клика на весь документ
+    document.addEventListener('click', function(event) {
+        // Проверяем, был ли клик вне searchHistory или не по ссылке в history-list
+        const isClickInsideSearchHistory = searchHistory.contains(event.target);
+        const isClickOnSearchInput = event.target === searchInput || event.target === searchButton;
+        const isClickOnHistoryLink = event.target.classList.contains('history-link');
+
+        // Закрываем searchHistory, если клик был вне его области или не по ссылке в history-list
+        if (!isClickInsideSearchHistory && !isClickOnSearchInput) {
+            searchHistory.style.display = 'none';
+        }
+    });
 });
+{% endif %}
 
 function deleteSearchQuery(queryId, linkElement) {
     fetch(`/delete_query/${queryId}/`, {
@@ -220,7 +238,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
 </script>
 </body>
 </html>

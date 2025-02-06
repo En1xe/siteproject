@@ -34,6 +34,7 @@ def handle_subscription_action(request):
 
     # Проверка действия - отписка
     elif action_type == 'unsubscribe':
+        print(request.user, author)
         try:
             subscription = SubscribeModel.objects.get(
                 subscriber=request.user,
